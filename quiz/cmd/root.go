@@ -6,13 +6,17 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	"github.com/l-lin/quiz/problem"
 	"github.com/l-lin/quiz/query"
 	"github.com/spf13/cobra"
 )
 
-var inputFile string
+var (
+	inputFile string
+	timer     time.Duration
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -34,6 +38,7 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "problems.csv", "input CSV file (default is ./problems.csv)")
+	rootCmd.PersistentFlags().DurationVarP(&timer, "time-limit", "t", 30*time.Second, "time limit to answer the questions")
 }
 
 func run(cmd *cobra.Command, args []string) {
@@ -47,9 +52,16 @@ func run(cmd *cobra.Command, args []string) {
 		log.Fatalf("Could not parse the file %s, error was: %v", inputFile, err)
 	}
 
-	result, err := query.Query(pbs)
+	querier := &query.ConsoleQuerier{}
+	ready, err := querier.AskReady()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(result)
+	if ready {
+		result, err := query.Query(querier, pbs, timer)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Println(result)
+	}
 }

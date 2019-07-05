@@ -8,7 +8,21 @@ import (
 // ConsoleQuerier displays the questions in the console
 type ConsoleQuerier struct{}
 
-func (cq *ConsoleQuerier) query(pb *problem.Problem) (bool, error) {
+// AskReady ask the user if he/she is ready to take the quiz
+func (cq *ConsoleQuerier) AskReady() (bool, error) {
+	prompt := promptui.Select{
+		Label: "Are you ready?",
+		Items: []string{"yes", "no"},
+	}
+	_, result, err := prompt.Run()
+	if err != nil {
+		return false, err
+	}
+	return "yes" == result, nil
+}
+
+// Query the problem to the user
+func (cq *ConsoleQuerier) Query(pb *problem.Problem) (bool, error) {
 	prompt := promptui.Prompt{
 		Label: pb.Question + " ",
 	}
