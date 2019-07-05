@@ -1,1 +1,5 @@
 # quiz
+
+```bash
+make help
+```
