@@ -1,5 +1,0 @@
-# quiz
-
-```bash
-make help
-```
