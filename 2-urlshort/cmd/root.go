@@ -6,10 +6,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/l-lin/urlshort/mapper"
 	"github.com/spf13/cobra"
 )
 
-var input string
+var (
+	yamlFile string
+	jsonFile string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -28,16 +32,29 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&input, "input", "i", "map", "input URL mapping")
+	rootCmd.PersistentFlags().StringVar(&yamlFile, "yaml-file", "mapping.yaml", "input yaml file")
+	rootCmd.PersistentFlags().StringVar(&jsonFile, "json-file", "mapping.json", "input json file")
 }
 
 func run(cmd *cobra.Command, args []string) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", hello)
-	var pathsToURLs map[string]string
-	pathsToURLs = mappingFromMap()
-	mapHandler := handler(pathsToURLs, mux)
-	log.Fatal(http.ListenAndServe(":8080", mapHandler))
+	// Maps
+	pathsToURLs := mapper.FromMap()
+	h := handler(pathsToURLs, mux)
+	// YAML
+	pathsToURLs, err := mapper.FromYaml(yamlFile)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	h = handler(pathsToURLs, h)
+	// JSON
+	pathsToURLs, err = mapper.FromJSON(jsonFile)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	h = handler(pathsToURLs, h)
+	log.Fatal(http.ListenAndServe(":8080", h))
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
@@ -53,12 +70,5 @@ func handler(pathsToURLs map[string]string, fallback http.Handler) http.HandlerF
 		} else {
 			fallback.ServeHTTP(w, r)
 		}
-	}
-}
-
-func mappingFromMap() map[string]string {
-	return map[string]string{
-		"/urlshort-godoc": "https://godoc.org/github.com/gophercises/urlshort",
-		"/yaml-godoc":     "https://godoc.org/gopkg.in/yaml.v2",
 	}
 }
