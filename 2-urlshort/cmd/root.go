@@ -10,17 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const port = ":8080"
+
 var (
 	yamlFile string
 	jsonFile string
+	dbURL    string
+	// rootCmd represents the base command when called without any subcommands
+	rootCmd = &cobra.Command{
+		Use:   "urlshort",
+		Short: "URL shortener web application",
+		Run:   run,
+	}
 )
-
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "urlshort",
-	Short: "URL shortener web application",
-	Run:   run,
-}
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -34,6 +36,7 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringVar(&yamlFile, "yaml-file", "mapping.yaml", "input yaml file")
 	rootCmd.PersistentFlags().StringVar(&jsonFile, "json-file", "mapping.json", "input json file")
+	rootCmd.PersistentFlags().StringVar(&dbURL, "db-url", "postgres://postgres@localhost:5432/urlshort?sslmode=disable", "DB URL")
 }
 
 func run(cmd *cobra.Command, args []string) {
@@ -56,7 +59,15 @@ func run(cmd *cobra.Command, args []string) {
 	} else {
 		h = handler(pathsToURLs, h)
 	}
-	log.Fatal(http.ListenAndServe(":8080", h))
+	// DB
+	pathsToURLs, err = mapper.FromDB(dbURL)
+	if err != nil {
+		log.Printf("Could not map URLs from database. Error was: %v. Skipping...", err)
+	} else {
+		h = handler(pathsToURLs, h)
+	}
+	log.Printf("Server started on port %s", port)
+	log.Fatal(http.ListenAndServe(port, h))
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
@@ -64,6 +75,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func handler(pathsToURLs map[string]string, fallback http.Handler) http.HandlerFunc {
+	log.Printf("URLs mapped: %v", pathsToURLs)
 	return func(w http.ResponseWriter, r *http.Request) {
 		mappedPath := pathsToURLs[r.URL.Path]
 		if mappedPath != "" {

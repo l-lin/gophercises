@@ -6,7 +6,8 @@ COPY . .
 
 RUN make get clean build-alpine-scratch
 # --------
-FROM scratch
+FROM alpine
+#FROM scratch
 
 WORKDIR /
 
