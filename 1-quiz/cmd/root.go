@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/l-lin/quiz/problem"
-	"github.com/l-lin/quiz/query"
+	"github.com/l-lin/1-quiz/problem"
+	"github.com/l-lin/1-quiz/query"
 	"github.com/spf13/cobra"
 )
 

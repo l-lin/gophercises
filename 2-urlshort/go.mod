@@ -1,4 +1,4 @@
-module github.com/l-lin/urlshort
+module github.com/l-lin/2-urlshort
 
 go 1.12
 
