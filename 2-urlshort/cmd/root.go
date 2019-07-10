@@ -45,15 +45,17 @@ func run(cmd *cobra.Command, args []string) {
 	// YAML
 	pathsToURLs, err := mapper.FromYaml(yamlFile)
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("Could not map URLs from Yaml file %s. Error was: %v. Skipping...", yamlFile, err)
+	} else {
+		h = handler(pathsToURLs, h)
 	}
-	h = handler(pathsToURLs, h)
 	// JSON
 	pathsToURLs, err = mapper.FromJSON(jsonFile)
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("Could not map URLs from JSON file %s. Error was: %v. Skipping...", jsonFile, err)
+	} else {
+		h = handler(pathsToURLs, h)
 	}
-	h = handler(pathsToURLs, h)
 	log.Fatal(http.ListenAndServe(":8080", h))
 }
 
