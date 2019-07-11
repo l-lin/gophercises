@@ -3,7 +3,7 @@ default: help
 PROJECTNAME=$(shell basename "$(PWD)")
 
 BIN_FOLDER=bin
-BIN_NAME=${PROJECTNAME}
+BIN_NAME=$(shell echo ${PROJECTNAME} | grep -E -o '[a-z]+')
 
 # Make is verbose in Linux. Make it silent.
 MAKEFLAGS += --silent
