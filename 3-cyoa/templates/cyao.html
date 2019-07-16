@@ -1,0 +1,22 @@
+<html>
+<head>
+    <base href="/" />
+    <link rel="stylesheet" href="public/css/main.css" />
+    <link rel="icon" href="public/images/favicon.ico" />
+</head>
+<body>
+<h1>{{.Chapter.Title}}</h1>
+<p>{{.Chapter.Story}}</p>
+{{if .Chapter.Options}}
+<ul>
+    {{range .Chapter.Options}}
+    <li><a href="{{.Arc}}">{{.Text}}</a></li>
+    {{end}}
+</ul>
+{{else}}
+<ul>
+    <li><a href="{{.StartChapter.Arc}}">{{.StartChapter.Text}}</a></li>
+</ul>
+{{end}}
+</body>
+</html>
