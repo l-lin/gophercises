@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 
+	"github.com/l-lin/4-link/link"
 	"github.com/spf13/cobra"
 )
 
@@ -27,8 +31,19 @@ func Execute() {
 }
 
 func run(cmd *cobra.Command, args []string) {
+	content, err := ioutil.ReadFile(inputFile)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	links, err := link.Parse(bytes.NewReader(content))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(links)
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&inputFile, "input", "i", "input HTML file to parse")
+	rootCmd.Flags().StringVarP(&inputFile, "input", "i", "", "input HTML file to parse")
+	rootCmd.MarkFlagRequired("input")
 }
