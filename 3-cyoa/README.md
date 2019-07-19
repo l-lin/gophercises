@@ -5,6 +5,8 @@
 ```bash
 # Build
 make compile
-# Run
+# Run the binary
 ./bin/cyao -h
+# Or directly using go
+go run . -h
 ```
