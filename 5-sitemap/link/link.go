@@ -45,3 +45,7 @@ func Unique(links []Link) []Link {
 	}
 	return result
 }
+
+// ToXML marshal the give slices of links into XML
+func ToXML(links []Link) {
+}

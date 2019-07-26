@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
 	"github.com/l-lin/5-sitemap/crawler"
+	"github.com/l-lin/5-sitemap/sitemap"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +15,7 @@ const maxDepth = 3
 
 var (
 	depth   int
+	verbose bool
 	rootCmd = &cobra.Command{
 		Use:   "sitemap",
 		Short: "Build a sitemap",
@@ -33,9 +36,14 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().IntVarP(&depth, "depth", "d", maxDepth, "Maximum number of links to follow")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose mode")
 }
 
 func run(cmd *cobra.Command, args []string) {
+	if !verbose {
+		log.SetLevel(log.WarnLevel)
+	}
+
 	c, err := crawler.New(args[0])
 	if err != nil {
 		log.Fatalln(err)
@@ -49,4 +57,10 @@ func run(cmd *cobra.Command, args []string) {
 		fields[strconv.Itoa(i)] = l.String()
 	}
 	log.WithFields(fields).Info("Links fetched")
+	s := sitemap.FromLinks(links)
+	result, err := s.ToXML()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("%s", result)
 }
