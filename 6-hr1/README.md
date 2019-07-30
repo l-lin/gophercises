@@ -3,5 +3,8 @@
 > [exercice 6 from Gophercises](https://gophercises.com/exercises/hr1)
 
 ```bash
-go run camel
+# Run camel exercise
+go run camel/main.go
+# Run caesar cipher exercise
+go run caesar/main.go
 ```
