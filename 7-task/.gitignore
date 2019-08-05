@@ -11,3 +11,7 @@ bin
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Project specific
+task.yaml
+task.boltdb
