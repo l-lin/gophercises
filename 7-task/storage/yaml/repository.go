@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/l-lin/7-task/internal"
 	"github.com/l-lin/7-task/task"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -65,7 +66,7 @@ func (s *Storage) GetIncompletes() []*task.Task {
 // GetCompleted tasks from yaml file
 func (s *Storage) GetCompleted() []*task.Task {
 	return s.filterTask(func(t *task.Task) bool {
-		return t.Completed && sameDay(*t.CompletedTime, time.Now())
+		return t.Completed && internal.SameDay(*t.CompletedTime, time.Now())
 	})
 }
 
@@ -126,12 +127,6 @@ func nextID(tasks []*task.Task) int {
 		}
 	}
 	return id + 1
-}
-
-func sameDay(t1 time.Time, t2 time.Time) bool {
-	utc1 := t1.UTC()
-	utc2 := t2.UTC()
-	return utc1.Year() == utc2.Year() && utc1.Month() == utc2.Month() && utc1.Day() == utc2.Day()
 }
 
 func writeToFile(path string, tasks []*task.Task) {

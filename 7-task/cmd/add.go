@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -36,4 +37,5 @@ func runAdd(cmd *cobra.Command, args []string) {
 		Created: time.Now(),
 	}
 	s.Add(t)
+	fmt.Printf("Task \"%s\" added\n", t.Content)
 }
