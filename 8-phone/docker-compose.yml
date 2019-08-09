@@ -1,16 +1,6 @@
 version: '3'
 
 services:
-  app:
-    build: .
-    entrypoint: /wait-for.sh
-    command: ["db:5432", "--", "/app", "--db-url", "postgres://postgres:postgres@db:5432/phone?sslmode=disable"]
-    depends_on:
-      - db
-    ports:
-      - 8080:8080
-    volumes:
-      - ./wait-for.sh:/wait-for.sh
   db:
     environment:
       POSTGRES_DB: phone
