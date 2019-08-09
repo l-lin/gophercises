@@ -2,10 +2,11 @@ package phone
 
 import (
 	"regexp"
-	"strings"
 )
 
-var phoneRexep = regexp.MustCompile(`[0-9]`)
+var phoneRexep = regexp.MustCompile("\\D")
+
+//var phoneRexep = regexp.MustCompile(`[0-9]`)
 
 // Phone not normalized fetched from DB
 type Phone struct {
@@ -15,11 +16,15 @@ type Phone struct {
 
 // Normalize phone to expected pattern
 func (p *Phone) Normalize() string {
-	var b strings.Builder
-	for _, c := range p.Value {
-		if phoneRexep.MatchString(string(c)) {
-			b.WriteString(string(c))
-		}
-	}
-	return b.String()
+	return phoneRexep.ReplaceAllString(p.Value, "")
 }
+
+//func (p *Phone) Normalize() string {
+//	var b strings.Builder
+//	for _, c := range p.Value {
+//		if phoneRexep.MatchString(string(c)) {
+//			b.WriteString(string(c))
+//		}
+//	}
+//	return b.String()
+//}
