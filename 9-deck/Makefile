@@ -2,55 +2,22 @@ default: help
 
 PROJECTNAME=$(shell basename "$(PWD)")
 
-BIN_FOLDER=bin
-BIN_NAME=$(shell echo ${PROJECTNAME} | grep -E -o '[a-z]+')
-
 # Make is verbose in Linux. Make it silent.
 MAKEFLAGS += --silent
 
 ## compile: compiles project in current system
-compile: clean get generate fmt vet test build
-
-## release: Generate binaries and an archive containing all binaries in bin/ folder
-release: clean get generate fmt vet test build-all archive
+compile: clean get generate fmt vet test
 
 ## watch: format, test and build project at go files modification
 watch:
 	@echo "  >  Watching go files..."
-	@if type "ag" > /dev/null 2>&1; then if type "entr" > /dev/null 2>&1; then ag -l | entr make clean generate fmt vet test-colorized build; else echo "Please install entr: http://eradman.com/entrproject/"; fi else echo "Please install silver searcher: https://github.com/ggreer/the_silver_searcher"; fi
+	@if type "ag" > /dev/null 2>&1; then if type "entr" > /dev/null 2>&1; then ag -l | entr make clean generate fmt vet test-colorized; else echo "Please install entr: http://eradman.com/entrproject/"; fi else echo "Please install silver searcher: https://github.com/ggreer/the_silver_searcher"; fi
 
 # ---------------------------------------------------------------------------
 
-archive:
-	@echo "  >  Generating archive"
-	@-tar czvf ${BIN_FOLDER}/${BIN_NAME}.tar.gz ${BIN_FOLDER}/amd64
-
 clean:
 	@echo "  >  Cleaning build cache"
-	@-rm -rf ${BIN_FOLDER} && go clean
-
-build:
-	@echo "  >  Building binary"
-	@go build -o ${BIN_FOLDER}/${BIN_NAME}
-
-build-all: build-macos build-windows build-linux build-alpine-scratch
-
-build-macos:
-	@echo "  >  Building binary for MacOS"
-	@GOOS=darwin GOARCH=amd64 go build -o ${BIN_FOLDER}/amd64/darwin/${BIN_NAME}
-
-build-windows:
-	@echo "  >  Building binary for Windows"
-	@GOOS=windows GOARCH=amd64 go build -o ${BIN_FOLDER}/amd64/windows/${BIN_NAME}.exe
-
-build-linux:
-	@echo "  >  Building binary for Linux"
-	@GOOS=linux GOARCH=amd64 go build -o ${BIN_FOLDER}/amd64/linux/${BIN_NAME}
-
-# Alpine & scratch base images use musl instead of gnu libc, thus we need to add additional parameters on the build
-build-alpine-scratch:
-	@echo "  >  Building binary for Alpine/Scratch"
-	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o ${BIN_FOLDER}/amd64/scratch/${BIN_NAME}
+	@-go clean
 
 fmt:
 	@echo "  >  Formatting code"
