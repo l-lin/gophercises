@@ -1,6 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"strconv"
+	"strings"
+)
+
+var coeff int
 
 // Card from a deck
 type Card struct {
@@ -13,12 +20,10 @@ func (c Card) String() string {
 }
 
 func (c Card) absRank() int {
-	// 100 is the next decimal of maxRank
-	// TODO: compute next decimal
-	return int(c.Suit)*100 + int(c.Rank)
+	return int(c.Suit)*coeff + int(c.Rank)
 }
 
-// NewDeck with sorted cards
+// NewDeck given an operation function to perform on them (e.g. sort, shuffle...)
 func NewDeck(opt func([]Card)) []Card {
 	cards := []Card{}
 	for _, s := range suits {
@@ -29,4 +34,22 @@ func NewDeck(opt func([]Card)) []Card {
 
 	opt(cards)
 	return cards
+}
+
+func init() {
+	coeff = computeCoeff(int(maxRank))
+}
+
+func computeCoeff(base int) int {
+	str := strconv.Itoa(base * 10)
+	var buff strings.Builder
+	buff.WriteString("1")
+	for i := 1; i < len(str); i++ {
+		buff.WriteString("0")
+	}
+	result, err := strconv.Atoi(buff.String())
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return result
 }
