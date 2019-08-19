@@ -6,7 +6,7 @@ import (
 )
 
 // Shuffle cards
-func Shuffle(cards []Card) {
+func Shuffle(cards []Card) []Card {
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	result := make([]Card, len(cards))
 	perm := r.Perm(len(cards))
@@ -14,4 +14,5 @@ func Shuffle(cards []Card) {
 		result[i] = cards[randIndex]
 	}
 	copy(cards, result)
+	return result
 }

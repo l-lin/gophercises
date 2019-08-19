@@ -5,15 +5,8 @@ import (
 )
 
 func TestNewDeck(t *testing.T) {
-	cards := NewDeck(func(cards []Card) {})
+	cards := NewDeck()
 	expectedCardsNb := 52
-	if len(cards) != expectedCardsNb {
-		t.Errorf("not enough cards, expected %d, got %d", expectedCardsNb, len(cards))
-	}
-
-	cards = NewDeck(func(cards []Card) {}, Card{Suit: BlackJoker}, Card{Suit: RedJoker})
-	expectedCardsNb = 54
-
 	if len(cards) != expectedCardsNb {
 		t.Errorf("not enough cards, expected %d, got %d", expectedCardsNb, len(cards))
 	}

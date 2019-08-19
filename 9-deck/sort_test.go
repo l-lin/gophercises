@@ -17,7 +17,7 @@ func TestDefaultSort(t *testing.T) {
 	given := make([]Card, len(cards))
 	copy(given, cards)
 
-	DefaultSort(cards)
+	cards = DefaultSort(cards)
 
 	expectedRanges := [...]int{2, 1, 3, 4, 0}
 	for gotRange, expectedRange := range expectedRanges {

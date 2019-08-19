@@ -13,7 +13,7 @@ func TestShuffle(t *testing.T) {
 	cards := make([]Card, len(given))
 	copy(cards, given)
 
-	Shuffle(cards)
+	cards = Shuffle(cards)
 
 	if len(cards) != len(given) {
 		t.Errorf("the result must preserve the slice length, expected %d, got %d", len(given), len(cards))

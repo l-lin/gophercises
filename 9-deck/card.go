@@ -29,16 +29,17 @@ func (c Card) absRank() int {
 }
 
 // NewDeck given an operation function to perform on them (e.g. sort, shuffle...)
-func NewDeck(opt func([]Card), additionalCards ...Card) []Card {
+func NewDeck(opts ...func([]Card) []Card) []Card {
 	cards := []Card{}
 	for _, s := range suits {
 		for i := minRank; i <= maxRank; i++ {
 			cards = append(cards, Card{Suit: s, Rank: i})
 		}
 	}
-	cards = append(cards, additionalCards...)
 
-	opt(cards)
+	for _, opt := range opts {
+		cards = opt(cards)
+	}
 	return cards
 }
 
