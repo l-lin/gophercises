@@ -12,11 +12,13 @@ func _() {
 	_ = x[Diamond-1]
 	_ = x[Club-2]
 	_ = x[Hearth-3]
+	_ = x[RedJoker-4]
+	_ = x[BlackJoker-5]
 }
 
-const _Suit_name = "SpadeDiamondClubHearth"
+const _Suit_name = "SpadeDiamondClubHearthRedJokerBlackJoker"
 
-var _Suit_index = [...]uint8{0, 5, 12, 16, 22}
+var _Suit_index = [...]uint8{0, 5, 12, 16, 22, 30, 40}
 
 func (i Suit) String() string {
 	if i < 0 || i >= Suit(len(_Suit_index)-1) {

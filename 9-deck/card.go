@@ -16,7 +16,12 @@ type Card struct {
 }
 
 func (c Card) String() string {
-	return fmt.Sprintf("%s of %s", c.Rank, c.Suit)
+	for _, s := range suits {
+		if c.Suit == s {
+			return fmt.Sprintf("%s of %s", c.Rank, c.Suit)
+		}
+	}
+	return fmt.Sprintf("%s", c.Rank)
 }
 
 func (c Card) absRank() int {
@@ -24,13 +29,14 @@ func (c Card) absRank() int {
 }
 
 // NewDeck given an operation function to perform on them (e.g. sort, shuffle...)
-func NewDeck(opt func([]Card)) []Card {
+func NewDeck(opt func([]Card), additionalCards ...Card) []Card {
 	cards := []Card{}
 	for _, s := range suits {
 		for i := minRank; i <= maxRank; i++ {
 			cards = append(cards, Card{Suit: s, Rank: i})
 		}
 	}
+	cards = append(cards, additionalCards...)
 
 	opt(cards)
 	return cards

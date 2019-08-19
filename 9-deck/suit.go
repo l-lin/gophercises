@@ -13,6 +13,10 @@ const (
 	Club
 	// Hearth card type
 	Hearth
+	// RedJoker card type
+	RedJoker
+	// BlackJoker card type
+	BlackJoker
 )
 
 var suits = [...]Suit{Spade, Diamond, Club, Hearth}
