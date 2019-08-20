@@ -1,8 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
+
+func ExampleCard() {
+	fmt.Println(Card{Suit: Spade, Rank: King})
+	fmt.Println(Card{Suit: Diamond, Rank: Queen})
+	fmt.Println(Card{Suit: Hearth, Rank: Eight})
+	fmt.Println(Card{Suit: RedJoker})
+	// Output:
+	// King of Spade
+	// Queen of Diamond
+	// Eight of Hearth
+	// RedJoker
+}
 
 func TestNewDeck(t *testing.T) {
 	cards := NewDeck()

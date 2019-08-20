@@ -1,6 +1,27 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+func ExampleShuffle() {
+	for _, card := range Shuffle([]Card{
+		Card{Suit: Hearth, Rank: Two},
+		Card{Suit: Spade, Rank: Queen},
+		Card{Suit: Spade, Rank: Four},
+		Card{Suit: Diamond, Rank: Ace},
+		Card{Suit: Club, Rank: Ten},
+	}) {
+		fmt.Println(card)
+	}
+	// Unordered output:
+	// Ten of Club
+	// Queen of Spade
+	// Four of Spade
+	// Two of Hearth
+	// Ace of Diamond
+}
 
 func TestShuffle(t *testing.T) {
 	given := []Card{

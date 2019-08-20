@@ -1,8 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
+
+func ExampleFilterOut() {
+	cards := NewDeck(FilterOut(func(card Card) bool {
+		return card.Rank != Ace
+	}))
+	for _, card := range cards {
+		fmt.Println(card)
+	}
+	// Output:
+	// Ace of Spade
+	// Ace of Diamond
+	// Ace of Club
+	// Ace of Hearth
+}
 
 func TestFilterOut(t *testing.T) {
 	given := []Card{

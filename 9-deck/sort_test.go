@@ -1,8 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
+
+func ExampleDefaultSort() {
+	for _, card := range DefaultSort([]Card{
+		Card{Suit: Hearth, Rank: Two},
+		Card{Suit: Spade, Rank: Queen},
+		Card{Suit: Spade, Rank: Four},
+		Card{Suit: Diamond, Rank: Ace},
+		Card{Suit: Club, Rank: Ten},
+	}) {
+		fmt.Println(card)
+	}
+	// Output:
+	// Four of Spade
+	// Queen of Spade
+	// Ace of Diamond
+	// Ten of Club
+	// Two of Hearth
+}
 
 func TestDefaultSort(t *testing.T) {
 	cards := []Card{

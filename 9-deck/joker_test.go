@@ -1,6 +1,21 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+func ExampleAddJokers() {
+	for _, card := range AddJokers([]Card{
+		Card{Suit: Hearth, Rank: Two},
+	}) {
+		fmt.Println(card)
+	}
+	// Output:
+	// Two of Hearth
+	// BlackJoker
+	// RedJoker
+}
 
 func TestAddJoker(t *testing.T) {
 	given := []Card{
