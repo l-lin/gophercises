@@ -12,6 +12,19 @@ func TestNewDeck(t *testing.T) {
 	}
 }
 
+func TestFromDecks(t *testing.T) {
+	deck1 := NewDeck()
+	deck2 := NewDeck()
+
+	cards := FromDecks(deck1, deck2)
+
+	expectedCardsNb := len(deck1) + len(deck2)
+
+	if len(cards) != expectedCardsNb {
+		t.Errorf("not enough cards, expected %d cards, got %d cards", expectedCardsNb, len(cards))
+	}
+}
+
 func TestComputeCoeff(t *testing.T) {
 	var tests = map[string]struct {
 		given    int

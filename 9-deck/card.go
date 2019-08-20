@@ -43,6 +43,17 @@ func NewDeck(opts ...func([]Card) []Card) []Card {
 	return cards
 }
 
+// FromDecks constructs a single deck composed of multiple decks
+func FromDecks(decks ...[]Card) []Card {
+	cards := make([]Card, 0)
+	for _, d := range decks {
+		for _, c := range d {
+			cards = append(cards, c)
+		}
+	}
+	return cards
+}
+
 func init() {
 	coeff = computeCoeff(int(maxRank))
 }
