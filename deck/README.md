@@ -1,6 +1,6 @@
 # Deck
 
-[![GoDoc](https://godoc.org/l-lin/9-deck?status.svg)](https://godoc.org/l-lin/9-deck)
+[![GoDoc](https://godoc.org/l-lin/deck?status.svg)](https://godoc.org/l-lin/deck)
 
 > [exercice 9 from Gophercises](https://gophercises.com/exercises/deck)
 
