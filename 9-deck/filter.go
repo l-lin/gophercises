@@ -1,4 +1,4 @@
-package main
+package deck
 
 // FilterOut card by given card
 func FilterOut(f func(Card) bool) func([]Card) []Card {

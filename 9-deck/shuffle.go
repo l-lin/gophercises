@@ -1,4 +1,4 @@
-package main
+package deck
 
 import (
 	"math/rand"

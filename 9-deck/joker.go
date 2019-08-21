@@ -1,4 +1,4 @@
-package main
+package deck
 
 // AddJokers adds jokers to the deck
 func AddJokers(cards []Card) []Card {

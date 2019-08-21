@@ -1,5 +1,5 @@
 //go:generate stringer -type=Rank
-package main
+package deck
 
 // Rank of a card
 type Rank int

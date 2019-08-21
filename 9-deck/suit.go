@@ -1,5 +1,5 @@
 //go:generate stringer -type=Suit
-package main
+package deck
 
 // Suit represents the type of card
 type Suit int
