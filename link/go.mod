@@ -1,4 +1,4 @@
-module github.com/l-lin/link
+module github.com/l-lin/gophercises/link
 
 go 1.12
 

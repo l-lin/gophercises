@@ -1,4 +1,4 @@
-module github.com/l-lin/phone
+module github.com/l-lin/gophercises/phone
 
 go 1.12
 

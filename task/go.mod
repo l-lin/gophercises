@@ -1,4 +1,4 @@
-module github.com/l-lin/task
+module github.com/l-lin/gophercises/task
 
 go 1.12
 

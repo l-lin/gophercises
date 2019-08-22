@@ -1,4 +1,4 @@
-module github.com/l-lin/sitemap
+module github.com/l-lin/gophercises/sitemap
 
 go 1.12
 

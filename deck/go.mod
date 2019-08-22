@@ -1,4 +1,4 @@
-module github.com/l-lin/deck
+module github.com/l-lin/gophercises/deck
 
 go 1.12
 

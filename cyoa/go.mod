@@ -1,4 +1,4 @@
-module github.com/l-lin/cyoa
+module github.com/l-lin/gophercises/cyoa
 
 go 1.12
 

@@ -1,4 +1,4 @@
-module github.com/l-lin/blackjack
+module github.com/l-lin/gophercises/blackjack
 
 go 1.12
 

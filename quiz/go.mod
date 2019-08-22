@@ -1,4 +1,4 @@
-module github.com/l-lin/quiz
+module github.com/l-lin/gophercises/quiz
 
 go 1.12
 
