@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/l-lin/task/internal"
-	"github.com/l-lin/task/task"
+	"github.com/l-lin/gophercises/task/internal"
+	"github.com/l-lin/gophercises/task/task"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"

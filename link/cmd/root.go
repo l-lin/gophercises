@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/l-lin/link/link"
+	"github.com/l-lin/gophercises/link/link"
 	"github.com/spf13/cobra"
 )
 

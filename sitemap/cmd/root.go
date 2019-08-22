@@ -5,8 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/l-lin/sitemap/crawler"
-	"github.com/l-lin/sitemap/sitemap"
+	"github.com/l-lin/gophercises/sitemap/crawler"
+	"github.com/l-lin/gophercises/sitemap/sitemap"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

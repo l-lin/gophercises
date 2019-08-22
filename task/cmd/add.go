@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/l-lin/task/add"
-	"github.com/l-lin/task/storage/boltdb"
-	"github.com/l-lin/task/storage/yaml"
-	"github.com/l-lin/task/task"
+	"github.com/l-lin/gophercises/task/add"
+	"github.com/l-lin/gophercises/task/storage/boltdb"
+	"github.com/l-lin/gophercises/task/storage/yaml"
+	"github.com/l-lin/gophercises/task/task"
 	"github.com/spf13/cobra"
 )
 

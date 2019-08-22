@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/l-lin/cyoa/story"
+	"github.com/l-lin/gophercises/cyoa/story"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )

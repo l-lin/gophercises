@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/l-lin/sitemap/link"
+	"github.com/l-lin/gophercises/sitemap/link"
 )
 
 func TestSitemap(t *testing.T) {

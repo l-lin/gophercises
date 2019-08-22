@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/l-lin/task/internal"
-	"github.com/l-lin/task/task"
+	"github.com/l-lin/gophercises/task/internal"
+	"github.com/l-lin/gophercises/task/task"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

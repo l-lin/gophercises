@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/l-lin/quiz/problem"
+	"github.com/l-lin/gophercises/quiz/problem"
 	"github.com/manifoldco/promptui"
 )
 

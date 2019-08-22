@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/l-lin/phone/list"
-	"github.com/l-lin/phone/phone"
-	"github.com/l-lin/phone/rm"
-	"github.com/l-lin/phone/storage/postgresql"
-	"github.com/l-lin/phone/update"
+	"github.com/l-lin/gophercises/phone/list"
+	"github.com/l-lin/gophercises/phone/phone"
+	"github.com/l-lin/gophercises/phone/rm"
+	"github.com/l-lin/gophercises/phone/storage/postgresql"
+	"github.com/l-lin/gophercises/phone/update"
 	"github.com/spf13/cobra"
 )
 

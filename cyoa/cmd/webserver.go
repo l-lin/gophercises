@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/l-lin/cyoa/story"
+	"github.com/l-lin/gophercises/cyoa/story"
 	"github.com/spf13/cobra"
 )
 

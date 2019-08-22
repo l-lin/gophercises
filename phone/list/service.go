@@ -1,6 +1,6 @@
 package list
 
-import "github.com/l-lin/phone/phone"
+import "github.com/l-lin/gophercises/phone/phone"
 
 // Repository provides an access to the task storage
 type Repository interface {

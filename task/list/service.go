@@ -1,6 +1,6 @@
 package list
 
-import "github.com/l-lin/task/task"
+import "github.com/l-lin/gophercises/task/task"
 
 // Repository provides an access to the task storage
 type Repository interface {

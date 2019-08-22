@@ -3,9 +3,9 @@ package cmd
 import (
 	"strconv"
 
-	"github.com/l-lin/task/do"
-	"github.com/l-lin/task/storage/boltdb"
-	"github.com/l-lin/task/storage/yaml"
+	"github.com/l-lin/gophercises/task/do"
+	"github.com/l-lin/gophercises/task/storage/boltdb"
+	"github.com/l-lin/gophercises/task/storage/yaml"
 	"github.com/spf13/cobra"
 )
 

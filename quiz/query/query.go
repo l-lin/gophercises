@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/l-lin/quiz/problem"
+	"github.com/l-lin/gophercises/quiz/problem"
 )
 
 // Querier asks the user the questions

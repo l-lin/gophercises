@@ -6,7 +6,7 @@ import (
 
 	// Import postgresql driver
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/l-lin/phone/phone"
+	"github.com/l-lin/gophercises/phone/phone"
 )
 
 const phoneNumberTable = "phone_numbers"

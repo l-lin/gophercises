@@ -3,7 +3,7 @@ package yaml
 import (
 	"testing"
 
-	"github.com/l-lin/task/task"
+	"github.com/l-lin/gophercises/task/task"
 )
 
 func TestNextID(t *testing.T) {

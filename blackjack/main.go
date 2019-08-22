@@ -1,6 +1,6 @@
 package main
 
-import "github.com/l-lin/blackjack/cmd"
+import "github.com/l-lin/gophercises/blackjack/cmd"
 
 func main() {
 	cmd.Execute()

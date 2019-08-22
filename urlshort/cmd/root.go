@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/l-lin/urlshort/mapper"
+	"github.com/l-lin/gophercises/urlshort/mapper"
 	"github.com/spf13/cobra"
 )
 

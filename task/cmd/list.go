@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/l-lin/task/list"
-	"github.com/l-lin/task/storage/boltdb"
-	"github.com/l-lin/task/storage/yaml"
+	"github.com/l-lin/gophercises/task/list"
+	"github.com/l-lin/gophercises/task/storage/boltdb"
+	"github.com/l-lin/gophercises/task/storage/yaml"
 	"github.com/spf13/cobra"
 )
 

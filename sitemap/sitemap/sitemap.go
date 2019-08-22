@@ -3,7 +3,7 @@ package sitemap
 import (
 	"encoding/xml"
 
-	"github.com/l-lin/sitemap/link"
+	"github.com/l-lin/gophercises/sitemap/link"
 )
 
 const sitemapSchema = "http://www.sitemaps.org/schemas/sitemap/0.9"
