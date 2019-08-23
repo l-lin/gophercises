@@ -42,7 +42,7 @@ func TestShuffle(t *testing.T) {
 
 	isSame := true
 	for i := 0; i < len(cards); i++ {
-		if cards[i] != given[i] {
+		if !cards[i].Equals(given[i]) {
 			isSame = false
 			break
 		}

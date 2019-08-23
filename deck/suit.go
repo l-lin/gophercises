@@ -1,22 +1,136 @@
-//go:generate stringer -type=Suit
 package deck
 
+import "github.com/logrusorgru/aurora"
+
 // Suit represents the type of card
-type Suit int
+// Setting all properties to private to make it immutable
+type Suit struct {
+	value         int
+	name          string
+	color         func(interface{}) aurora.Value
+	hasRank       bool
+	asciiTemplate string
+}
 
-const (
+func (s Suit) String() string {
+	return s.name
+}
+
+// Value of the suit
+func (s Suit) Value() int {
+	return s.value
+}
+
+// Color of the suit
+func (s Suit) Color(arg interface{}) aurora.Value {
+	return s.color(arg)
+}
+
+// ASCIITemplate of the card suit in ASCII
+func (s Suit) ASCIITemplate() string {
+	return s.asciiTemplate
+}
+
+// Equals checks if the given suit is the same or not
+func (s Suit) Equals(to Suit) bool {
+	return s.value == to.value && s.name == to.name
+}
+
+// HasRank specifies if the suit use card rank
+func (s Suit) HasRank() bool {
+	return s.hasRank
+}
+
+var (
 	// Spade card type
-	Spade Suit = iota
+	Spade = Suit{
+		value:   1,
+		name:    "Spade",
+		color:   aurora.White,
+		hasRank: true,
+		asciiTemplate: `
+┌────────┐
+│%s .    │
+│  / \   │
+│ (_,_)  │
+│   I  %s│
+└────────┘
+`,
+	}
 	// Diamond card type
-	Diamond
+	Diamond = Suit{
+		value:   2,
+		name:    "Diamond",
+		color:   aurora.BrightRed,
+		hasRank: true,
+		asciiTemplate: `
+┌────────┐
+│%s /\   │
+│  /  \  │
+│  \  /  │
+│   \/ %s│
+└────────┘
+`,
+	}
 	// Club card type
-	Club
+	Club = Suit{
+		value:   3,
+		name:    "Club",
+		color:   aurora.White,
+		hasRank: true,
+		asciiTemplate: `
+┌────────┐
+│%s _    │
+│  ( )   │
+│ (_x_)  │
+│   Y  %s│
+└────────┘
+`,
+	}
 	// Hearth card type
-	Hearth
-	// RedJoker card type
-	RedJoker
+	Hearth = Suit{
+		value:   4,
+		name:    "Hearth",
+		color:   aurora.BrightRed,
+		hasRank: true,
+		asciiTemplate: `
+┌────────┐
+│%s_  _  │
+│ ( \/ ) │
+│  \  /  │
+│   \/ %s│
+└────────┘
+`,
+	}
 	// BlackJoker card type
-	BlackJoker
+	BlackJoker = Suit{
+		value:   5,
+		name:    "BlackJoker",
+		color:   aurora.White,
+		hasRank: false,
+		asciiTemplate: `
+┌────────┐
+│* \||/ K│
+│J /~~\ O│
+│O( o o)J│
+│K \ v/ *│
+└────────┘
+`,
+	}
+	// RedJoker card type
+	RedJoker = Suit{
+		value:   6,
+		name:    "RedJoker",
+		color:   aurora.BrightRed,
+		hasRank: false,
+		asciiTemplate: `
+┌────────┐
+│+ \||/ K│
+│J /~~\ O│
+│O( o o)J│
+│K \ v/ +│
+└────────┘
+`,
+	}
+	suits = [...]Suit{Spade, Diamond, Club, Hearth}
 )
-
-var suits = [...]Suit{Spade, Diamond, Club, Hearth}

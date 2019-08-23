@@ -1,6 +1,8 @@
 //go:generate stringer -type=Rank
 package deck
 
+import "strconv"
+
 // Rank of a card
 type Rank int
 
@@ -38,3 +40,14 @@ const (
 	minRank = Ace
 	maxRank = King
 )
+
+// Single character of the rank
+func (r Rank) Single() string {
+	if r > Ace && r < Jack {
+		return strconv.Itoa(int(r))
+	}
+	if r == Ace {
+		return "A"
+	}
+	return string(r.String()[0])
+}

@@ -40,7 +40,7 @@ func TestDefaultSort(t *testing.T) {
 
 	expectedRanges := [...]int{2, 1, 3, 4, 0}
 	for gotRange, expectedRange := range expectedRanges {
-		if cards[gotRange] != given[expectedRange] {
+		if !cards[gotRange].Equals(given[expectedRange]) {
 			t.Errorf("card number %d must be %s, got %s", gotRange, given[expectedRange].String(), cards[gotRange].String())
 		}
 	}

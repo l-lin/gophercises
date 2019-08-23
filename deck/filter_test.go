@@ -38,7 +38,7 @@ func TestFilterOut(t *testing.T) {
 
 	cards = FilterOut(func(card Card) bool {
 		for _, cardToFilterOut := range cardsToFilterOut {
-			if card.Rank == cardToFilterOut.Rank && card.Suit == cardToFilterOut.Suit {
+			if card.Equals(cardToFilterOut) {
 				return true
 			}
 		}
@@ -50,7 +50,7 @@ func TestFilterOut(t *testing.T) {
 	}
 	for _, c := range cards {
 		for _, cardToFilterOut := range cardsToFilterOut {
-			if c.Rank == cardToFilterOut.Rank && c.Suit == cardToFilterOut.Suit {
+			if c.Equals(cardToFilterOut) {
 				t.Errorf("%s was not filtered out!", c)
 			}
 		}

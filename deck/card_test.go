@@ -17,6 +17,52 @@ func ExampleCard() {
 	// RedJoker
 }
 
+func ExampleCard_ToASCII() {
+	fmt.Println(Card{Suit: Spade, Rank: Ten}.ToASCII())
+	fmt.Println(Card{Suit: Diamond, Rank: Eight}.ToASCII())
+	fmt.Println(Card{Suit: Club, Rank: Jack}.ToASCII())
+	fmt.Println(Card{Suit: Hearth, Rank: Ace}.ToASCII())
+	fmt.Println(Card{Suit: BlackJoker}.ToASCII())
+	fmt.Println(Card{Suit: RedJoker}.ToASCII())
+	// Output:
+	// ┌────────┐
+	// │10 .    │
+	// │  / \   │
+	// │ (_,_)  │
+	// │   I  10│
+	// └────────┘
+	// ┌────────┐
+	// │8  /\   │
+	// │  /  \  │
+	// │  \  /  │
+	// │   \/  8│
+	// └────────┘
+	// ┌────────┐
+	// │J  _    │
+	// │  ( )   │
+	// │ (_x_)  │
+	// │   Y   J│
+	// └────────┘
+	// ┌────────┐
+	// │A _  _  │
+	// │ ( \/ ) │
+	// │  \  /  │
+	// │   \/  A│
+	// └────────┘
+	// ┌────────┐
+	// │* \||/ K│
+	// │J /~~\ O│
+	// │O( o o)J│
+	// │K \ v/ *│
+	// └────────┘
+	// ┌────────┐
+	// │+ \||/ K│
+	// │J /~~\ O│
+	// │O( o o)J│
+	// │K \ v/ +│
+	// └────────┘
+}
+
 func TestNewDeck(t *testing.T) {
 	cards := NewDeck()
 	expectedCardsNb := 52
