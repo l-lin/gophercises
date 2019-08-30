@@ -2,6 +2,7 @@ package player
 
 import (
 	"math"
+	"strings"
 
 	"github.com/l-lin/gophercises/deck"
 )
@@ -10,7 +11,7 @@ const topScore = 21
 
 // HandCard of a player
 type HandCard struct {
-	cards []deck.Card
+	Cards []deck.Card
 }
 
 // NewHandCard instanciates a new handcard
@@ -18,19 +19,19 @@ func NewHandCard(cards ...deck.Card) HandCard {
 	c := []deck.Card{}
 	c = append(c, cards...)
 	return HandCard{
-		cards: c,
+		Cards: c,
 	}
 }
 
 // Add a new card to the handcard
 func (h HandCard) Add(c deck.Card) {
-	h.cards = append(h.cards, c)
+	h.Cards = append(h.Cards, c)
 }
 
 // IsBlackJack checks if the current cards are a blackjack
 // combinaison which 2 cards & Ace + face card (J/Q/K)
 func (h HandCard) IsBlackJack() bool {
-	return len(h.cards) == 2 && h.compute() == topScore
+	return len(h.Cards) == 2 && h.compute() == topScore
 }
 
 // IsOver returns true if the score is over 21
@@ -61,9 +62,9 @@ func (h HandCard) CompareTo(to HandCard) int {
 	final2 := math.Abs(float64(topScore - val2))
 
 	if final1 == final2 {
-		if len(h.cards) == len(to.cards) {
+		if len(h.Cards) == len(to.Cards) {
 			return 0
-		} else if len(h.cards) < len(to.cards) {
+		} else if len(h.Cards) < len(to.Cards) {
 			return 1
 		}
 		return -1
@@ -74,10 +75,20 @@ func (h HandCard) CompareTo(to HandCard) int {
 	return -1
 }
 
+// Print the cards in ASCII art with colors
+func (h HandCard) Print() string {
+	var b strings.Builder
+	for i := 0; i < len(h.Cards); i++ {
+		b.WriteString(h.Cards[i].Print())
+		b.WriteString(" ")
+	}
+	return b.String()
+}
+
 func (h HandCard) compute() int {
 	result := 0
 	nbAces := 0
-	for _, c := range h.cards {
+	for _, c := range h.Cards {
 		var val int
 		if c.Rank == deck.Jack || c.Rank == deck.Queen || c.Rank == deck.King {
 			val = 10

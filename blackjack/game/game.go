@@ -1,28 +1,51 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/l-lin/gophercises/blackjack/player"
+	"github.com/l-lin/gophercises/deck"
 )
 
 var (
 	dealer  player.Dealer
 	players []player.Player
+	cards   []deck.Card
 )
+
+const nbCardsOnStart = 2
 
 // Run blackjack game
 func Run(nbPlayers int) {
 	initGame(nbPlayers)
+	fmt.Println(dealer.HandCard.Print())
 }
 
 func initGame(nbPlayers int) {
-	//cards := deck.NewDeck(deck.Shuffle)
-	//pc1 := cards[0]
-	//dc1 := cards[1]
-	//pc2 := cards[2]
-	//dc2 := cards[3]
+	cards = deck.NewDeck(deck.Shuffle)
+	cards = initDealer(cards)
+	cards = initPlayers(cards, nbPlayers)
+	fmt.Println(len(cards))
+}
 
-	//cards = append(cards[:4], cards[4:]...)
+func initDealer(cards []deck.Card) []deck.Card {
+	dealerCards := make([]deck.Card, nbCardsOnStart)
+	for i := 0; i < nbCardsOnStart; i++ {
+		dealerCards[i] = cards[i]
+	}
+	dealer = player.NewDealer(dealerCards...)
+	return cards[nbCardsOnStart:]
+}
 
-	//p1 := player.NewPlayer(pc1, pc2)
-
+func initPlayers(cards []deck.Card, nbPlayers int) []deck.Card {
+	players = make([]player.Player, nbPlayers)
+	for i := 0; i < nbPlayers; i++ {
+		playerCards := make([]deck.Card, nbCardsOnStart)
+		for j := 0; j < nbCardsOnStart; j++ {
+			playerCards[j] = cards[i+j]
+		}
+		players[i] = player.NewPlayer(playerCards...)
+		cards = cards[nbCardsOnStart:]
+	}
+	return cards
 }

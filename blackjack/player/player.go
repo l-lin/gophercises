@@ -8,9 +8,9 @@ type Player struct {
 }
 
 // NewPlayer returns a new instanciated player
-func NewPlayer(c1, c2 deck.Card) Player {
+func NewPlayer(cards ...deck.Card) Player {
 	return Player{
-		HandCard: NewHandCard(c1, c2),
+		HandCard: NewHandCard(cards...),
 	}
 }
 

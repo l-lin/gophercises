@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/l-lin/gophercises/blackjack/game"
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
+var nbPlayers int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -25,6 +26,10 @@ func Execute() {
 	}
 }
 
+func init() {
+	rootCmd.Flags().IntVarP(&nbPlayers, "players", "p", 1, "number of players")
+}
+
 func run(cmd *cobra.Command, args []string) {
 	fmt.Print(`
   , _                                         
@@ -33,4 +38,5 @@ func run(cmd *cobra.Command, args []string) {
   |(_/ |_/ \/|_/ \__/ | \/  |/ \/|_/ \__/ | \/
                            (|                 
 `)
+	game.Run(nbPlayers)
 }
