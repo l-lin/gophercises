@@ -9,7 +9,7 @@ type Suit struct {
 	name          string
 	color         func(interface{}) aurora.Value
 	hasRank       bool
-	asciiTemplate string
+	asciiTemplate []string
 }
 
 func (s Suit) String() string {
@@ -27,7 +27,7 @@ func (s Suit) Color(arg interface{}) aurora.Value {
 }
 
 // ASCIITemplate of the card suit in ASCII
-func (s Suit) ASCIITemplate() string {
+func (s Suit) ASCIITemplate() []string {
 	return s.asciiTemplate
 }
 
@@ -48,14 +48,14 @@ var (
 		name:    "Spade",
 		color:   aurora.White,
 		hasRank: true,
-		asciiTemplate: `
-┌────────┐
-│%s .    │
-│  / \   │
-│ (_,_)  │
-│   I  %s│
-└────────┘
-`,
+		asciiTemplate: []string{
+			`┌────────┐`,
+			`│%s .    │`,
+			`│  / \   │`,
+			`│ (_,_)  │`,
+			`│   I  %s│`,
+			`└────────┘`,
+		},
 	}
 	// Diamond card type
 	Diamond = Suit{
@@ -63,14 +63,14 @@ var (
 		name:    "Diamond",
 		color:   aurora.BrightRed,
 		hasRank: true,
-		asciiTemplate: `
-┌────────┐
-│%s /\   │
-│  /  \  │
-│  \  /  │
-│   \/ %s│
-└────────┘
-`,
+		asciiTemplate: []string{
+			`┌────────┐`,
+			`│%s /\   │`,
+			`│  /  \  │`,
+			`│  \  /  │`,
+			`│   \/ %s│`,
+			`└────────┘`,
+		},
 	}
 	// Club card type
 	Club = Suit{
@@ -78,14 +78,14 @@ var (
 		name:    "Club",
 		color:   aurora.White,
 		hasRank: true,
-		asciiTemplate: `
-┌────────┐
-│%s _    │
-│  ( )   │
-│ (_x_)  │
-│   Y  %s│
-└────────┘
-`,
+		asciiTemplate: []string{
+			`┌────────┐`,
+			`│%s _    │`,
+			`│  ( )   │`,
+			`│ (_x_)  │`,
+			`│   Y  %s│`,
+			`└────────┘`,
+		},
 	}
 	// Hearth card type
 	Hearth = Suit{
@@ -93,14 +93,14 @@ var (
 		name:    "Hearth",
 		color:   aurora.BrightRed,
 		hasRank: true,
-		asciiTemplate: `
-┌────────┐
-│%s_  _  │
-│ ( \/ ) │
-│  \  /  │
-│   \/ %s│
-└────────┘
-`,
+		asciiTemplate: []string{
+			`┌────────┐`,
+			`│%s_  _  │`,
+			`│ ( \/ ) │`,
+			`│  \  /  │`,
+			`│   \/ %s│`,
+			`└────────┘`,
+		},
 	}
 	// BlackJoker card type
 	BlackJoker = Suit{
@@ -108,14 +108,14 @@ var (
 		name:    "BlackJoker",
 		color:   aurora.White,
 		hasRank: false,
-		asciiTemplate: `
-┌────────┐
-│* \||/ K│
-│J /~~\ O│
-│O( o o)J│
-│K \ v/ *│
-└────────┘
-`,
+		asciiTemplate: []string{
+			`┌────────┐`,
+			`│* \||/ K│`,
+			`│J /~~\ O│`,
+			`│O( o o)J│`,
+			`│K \ v/ *│`,
+			`└────────┘`,
+		},
 	}
 	// RedJoker card type
 	RedJoker = Suit{
@@ -123,14 +123,14 @@ var (
 		name:    "RedJoker",
 		color:   aurora.BrightRed,
 		hasRank: false,
-		asciiTemplate: `
-┌────────┐
-│+ \||/ K│
-│J /~~\ O│
-│O( o o)J│
-│K \ v/ +│
-└────────┘
-`,
+		asciiTemplate: []string{
+			`┌────────┐`,
+			`│+ \||/ K│`,
+			`│J /~~\ O│`,
+			`│O( o o)J│`,
+			`│K \ v/ +│`,
+			`└────────┘`,
+		},
 	}
 	suits = [...]Suit{Spade, Diamond, Club, Hearth}
 )

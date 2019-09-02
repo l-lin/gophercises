@@ -32,8 +32,8 @@ func (c Card) Equals(to Card) bool {
 }
 
 // ToASCII renders the card in ASCII art
-func (c Card) ToASCII() string {
-	var ascii string
+func (c Card) ToASCII() []string {
+	ascii := []string{}
 	if c.Suit.HasRank() {
 		top := c.Rank.Single()
 		bottom := c.Rank.Single()
@@ -41,11 +41,20 @@ func (c Card) ToASCII() string {
 			top = fmt.Sprintf("%s ", top)
 			bottom = fmt.Sprintf(" %s", bottom)
 		}
-		ascii = fmt.Sprintf(c.Suit.ASCIITemplate(), top, bottom)
+		for i, t := range c.Suit.ASCIITemplate() {
+			switch i {
+			case 1:
+				ascii = append(ascii, fmt.Sprintf(t, top))
+			case 4:
+				ascii = append(ascii, fmt.Sprintf(t, bottom))
+			default:
+				ascii = append(ascii, t)
+			}
+		}
 	} else {
 		ascii = c.Suit.ASCIITemplate()
 	}
-	return strings.Trim(ascii, "\n")
+	return ascii
 }
 
 // Print card in ASCII with color
@@ -81,6 +90,25 @@ func FromDecks(decks ...[]Card) []Card {
 		}
 	}
 	return cards
+}
+
+// ToASCII renders the cards in ASCII art
+func ToASCII(cards []Card) string {
+	if len(cards) == 0 {
+		return ""
+	}
+	var b strings.Builder
+	templates := [][]string{}
+	for _, c := range cards {
+		templates = append(templates, c.ToASCII())
+	}
+	for i := 0; i < len(templates[0]); i++ {
+		for _, t := range templates {
+			b.WriteString(t[i])
+		}
+		b.WriteString("\n")
+	}
+	return strings.Trim(b.String(), "\n")
 }
 
 func init() {

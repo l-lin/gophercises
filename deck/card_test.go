@@ -2,6 +2,7 @@ package deck
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -18,12 +19,12 @@ func ExampleCard() {
 }
 
 func ExampleCard_ToASCII() {
-	fmt.Println(Card{Suit: Spade, Rank: Ten}.ToASCII())
-	fmt.Println(Card{Suit: Diamond, Rank: Eight}.ToASCII())
-	fmt.Println(Card{Suit: Club, Rank: Jack}.ToASCII())
-	fmt.Println(Card{Suit: Hearth, Rank: Ace}.ToASCII())
-	fmt.Println(Card{Suit: BlackJoker}.ToASCII())
-	fmt.Println(Card{Suit: RedJoker}.ToASCII())
+	fmt.Println(strings.Join(Card{Suit: Spade, Rank: Ten}.ToASCII(), "\n"))
+	fmt.Println(strings.Join(Card{Suit: Diamond, Rank: Eight}.ToASCII(), "\n"))
+	fmt.Println(strings.Join(Card{Suit: Club, Rank: Jack}.ToASCII(), "\n"))
+	fmt.Println(strings.Join(Card{Suit: Hearth, Rank: Ace}.ToASCII(), "\n"))
+	fmt.Println(strings.Join(Card{Suit: BlackJoker}.ToASCII(), "\n"))
+	fmt.Println(strings.Join(Card{Suit: RedJoker}.ToASCII(), "\n"))
 	// Output:
 	// ┌────────┐
 	// │10 .    │
@@ -99,6 +100,68 @@ func TestComputeCoeff(t *testing.T) {
 			actual := computeCoeff(tt.given)
 			if actual != tt.expected {
 				t.Errorf("(%d): expected %d, actual %d", tt.given, tt.expected, actual)
+			}
+		})
+	}
+}
+
+func TestToASCII(t *testing.T) {
+	var tests = map[string]struct {
+		given    []Card
+		expected string
+	}{
+		"1 card": {
+			given: []Card{
+				Card{Suit: Spade, Rank: Ten},
+			},
+			expected: strings.Trim(`
+┌────────┐
+│10 .    │
+│  / \   │
+│ (_,_)  │
+│   I  10│
+└────────┘
+`, "\n"),
+		},
+		"2 cards": {
+			given: []Card{
+				Card{Suit: Spade, Rank: Ten},
+				Card{Suit: Diamond, Rank: Eight},
+			},
+			expected: strings.Trim(`
+┌────────┐┌────────┐
+│10 .    ││8  /\   │
+│  / \   ││  /  \  │
+│ (_,_)  ││  \  /  │
+│   I  10││   \/  8│
+└────────┘└────────┘
+`, "\n"),
+		},
+		"3 cards": {
+			given: []Card{
+				Card{Suit: Spade, Rank: Ten},
+				Card{Suit: Diamond, Rank: Eight},
+				Card{Suit: BlackJoker},
+			},
+			expected: strings.Trim(`
+┌────────┐┌────────┐┌────────┐
+│10 .    ││8  /\   ││* \||/ K│
+│  / \   ││  /  \  ││J /~~\ O│
+│ (_,_)  ││  \  /  ││O( o o)J│
+│   I  10││   \/  8││K \ v/ *│
+└────────┘└────────┘└────────┘
+`, "\n"),
+		},
+		"0 card": {
+			given:    []Card{},
+			expected: "",
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			actual := ToASCII(tt.given)
+			if actual != tt.expected {
+				t.Errorf("\nexpected:\n%v\nactual:\n%v", tt.expected, actual)
 			}
 		})
 	}
