@@ -25,6 +25,7 @@ func ExampleCard_ToASCII() {
 	fmt.Println(strings.Join(Card{Suit: Hearth, Rank: Ace}.ToASCII(), "\n"))
 	fmt.Println(strings.Join(Card{Suit: BlackJoker}.ToASCII(), "\n"))
 	fmt.Println(strings.Join(Card{Suit: RedJoker}.ToASCII(), "\n"))
+	fmt.Println(strings.Join(Card{Suit: Spade, Rank: Five, Hidden: true}.ToASCII(), "\n"))
 	// Output:
 	// ┌────────┐
 	// │10 .    │
@@ -61,6 +62,12 @@ func ExampleCard_ToASCII() {
 	// │J /~~\ O│
 	// │O( o o)J│
 	// │K \ v/ +│
+	// └────────┘
+	// ┌────────┐
+	// │████████│
+	// │████████│
+	// │████████│
+	// │████████│
 	// └────────┘
 }
 

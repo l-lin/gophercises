@@ -13,8 +13,9 @@ var coeff int
 
 // Card from a deck
 type Card struct {
-	Suit Suit
-	Rank Rank
+	Suit   Suit
+	Rank   Rank
+	Hidden bool
 }
 
 func (c Card) String() string {
@@ -34,7 +35,9 @@ func (c Card) Equals(to Card) bool {
 // ToASCII renders the card in ASCII art
 func (c Card) ToASCII() []string {
 	ascii := []string{}
-	if c.Suit.HasRank() {
+	if c.Hidden {
+		ascii = cardTemplate
+	} else if c.Suit.HasRank() {
 		top := c.Rank.Single()
 		bottom := c.Rank.Single()
 		if c.Rank != Ten {

@@ -1,6 +1,8 @@
 package deck
 
-import "github.com/logrusorgru/aurora"
+import (
+	"github.com/logrusorgru/aurora"
+)
 
 // Suit represents the type of card
 // Setting all properties to private to make it immutable
@@ -132,5 +134,13 @@ var (
 			`└────────┘`,
 		},
 	}
-	suits = [...]Suit{Spade, Diamond, Club, Hearth}
+	suits        = [...]Suit{Spade, Diamond, Club, Hearth}
+	cardTemplate = []string{
+		`┌────────┐`,
+		`│████████│`,
+		`│████████│`,
+		`│████████│`,
+		`│████████│`,
+		`└────────┘`,
+	}
 )
