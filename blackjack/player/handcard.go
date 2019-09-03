@@ -2,7 +2,6 @@ package player
 
 import (
 	"math"
-	"strings"
 
 	"github.com/l-lin/gophercises/deck"
 )
@@ -24,7 +23,7 @@ func NewHandCard(cards ...deck.Card) HandCard {
 }
 
 // Add a new card to the handcard
-func (h HandCard) Add(c deck.Card) {
+func (h *HandCard) Add(c deck.Card) {
 	h.Cards = append(h.Cards, c)
 }
 
@@ -75,14 +74,9 @@ func (h HandCard) CompareTo(to HandCard) int {
 	return -1
 }
 
-// Print the cards in ASCII art with colors
-func (h HandCard) Print() string {
-	var b strings.Builder
-	for i := 0; i < len(h.Cards); i++ {
-		b.WriteString(h.Cards[i].Print())
-		b.WriteString(" ")
-	}
-	return b.String()
+// ToASCII renders the cards in ASCII art
+func (h HandCard) ToASCII() string {
+	return deck.ToASCII(h.Cards)
 }
 
 func (h HandCard) compute() int {

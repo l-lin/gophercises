@@ -8,8 +8,8 @@ type Dealer struct {
 }
 
 // NewDealer returns a new instanciated dealer
-func NewDealer(cards ...deck.Card) Dealer {
-	d := Dealer{}
+func NewDealer(cards ...deck.Card) *Dealer {
+	d := &Dealer{}
 	d.HandCard = NewHandCard(cards...)
 	return d
 }

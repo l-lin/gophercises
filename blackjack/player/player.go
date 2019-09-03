@@ -8,8 +8,8 @@ type Player struct {
 }
 
 // NewPlayer returns a new instanciated player
-func NewPlayer(cards ...deck.Card) Player {
-	return Player{
+func NewPlayer(cards ...deck.Card) *Player {
+	return &Player{
 		HandCard: NewHandCard(cards...),
 	}
 }
