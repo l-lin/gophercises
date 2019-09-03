@@ -114,6 +114,29 @@ func ToASCII(cards []Card) string {
 	return strings.Trim(b.String(), "\n")
 }
 
+// Print cards in color & ASCII art
+func Print(cards []Card) string {
+	if len(cards) == 0 {
+		return ""
+	}
+	var b strings.Builder
+	templates := [][]string{}
+	for _, c := range cards {
+		templates = append(templates, c.ToASCII())
+	}
+	for i := 0; i < len(templates[0]); i++ {
+		for j, t := range templates {
+			if !cards[j].Hidden {
+				b.WriteString(aurora.Sprintf(cards[j].Suit.Color(t[i])))
+			} else {
+				b.WriteString(t[i])
+			}
+		}
+		b.WriteString("\n")
+	}
+	return strings.Trim(b.String(), "\n")
+}
+
 func init() {
 	coeff = computeCoeff(int(maxRank))
 }
