@@ -62,7 +62,7 @@ func (c Card) ToASCII() []string {
 
 // Print card in ASCII with color
 func (c Card) Print() string {
-	return aurora.Sprintf(c.Suit.Color(c.ToASCII()))
+	return Print([]Card{c})
 }
 
 func (c Card) absRank() int {
