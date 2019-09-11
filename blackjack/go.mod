@@ -3,9 +3,9 @@ module github.com/l-lin/gophercises/blackjack
 go 1.12
 
 require (
-	github.com/gosuri/uilive v0.0.3
-	github.com/l-lin/gophercises/deck v0.0.0-20190903063644-4ce075a5a658
-	github.com/mattn/go-isatty v0.0.4 // indirect
+	github.com/l-lin/gophercises/deck v0.0.0-20190904072958-975d7a582e8c
+	github.com/logrusorgru/aurora v0.0.0-20190803045625-94edacc10f9b
+	github.com/manifoldco/promptui v0.3.2
 	github.com/spf13/cobra v0.0.5
-	github.com/tcnksm/go-input v0.0.0-20180404061846-548a7d7a8ee8
+	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c // indirect
 )

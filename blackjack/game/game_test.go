@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/l-lin/gophercises/blackjack/player"
 	"github.com/l-lin/gophercises/deck"
 )
 
@@ -97,4 +98,130 @@ func TestHit(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestFinish(t *testing.T) {
+	type expected struct {
+		nbWPlayer int
+		wPlayer   *player.Player
+		wDealer   *player.Dealer
+	}
+	var tests = map[string]struct {
+		given Game
+		expected
+	}{
+		"no one is over, player 1 wins": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(1), newCard(9)),
+					player.NewPlayer(newCard(9), newCard(9)),
+				},
+				Dealer: player.NewDealer(newCard(1), newCard(8)),
+			},
+			expected: expected{
+				nbWPlayer: 1,
+				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
+				wDealer:   nil,
+			},
+		},
+		"no one is over, player 2 wins": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(9), newCard(9)),
+					player.NewPlayer(newCard(1), newCard(9)),
+				},
+				Dealer: player.NewDealer(newCard(1), newCard(8)),
+			},
+			expected: expected{
+				nbWPlayer: 2,
+				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
+				wDealer:   nil,
+			},
+		},
+		"no one is over, dealer wins": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(1), newCard(8)),
+					player.NewPlayer(newCard(9), newCard(9)),
+				},
+				Dealer: player.NewDealer(newCard(1), newCard(9)),
+			},
+			expected: expected{
+				nbWPlayer: 0,
+				wPlayer:   nil,
+				wDealer:   player.NewDealer(newCard(1), newCard(9)),
+			},
+		},
+		"player 2 is over, player 1 wins": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(1), newCard(9)),
+					player.NewPlayer(newCard(9), newCard(9), newCard(10)),
+				},
+				Dealer: player.NewDealer(newCard(1), newCard(7)),
+			},
+			expected: expected{
+				nbWPlayer: 1,
+				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
+				wDealer:   nil,
+			},
+		},
+		"player 1 is over, player 2 wins": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(9), newCard(9), newCard(10)),
+					player.NewPlayer(newCard(1), newCard(9)),
+				},
+				Dealer: player.NewDealer(newCard(1), newCard(7)),
+			},
+			expected: expected{
+				nbWPlayer: 2,
+				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
+				wDealer:   nil,
+			},
+		},
+		"both players are over, dealer wins": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(8), newCard(9), newCard(5)),
+					player.NewPlayer(newCard(9), newCard(9), newCard(10)),
+				},
+				Dealer: player.NewDealer(newCard(1), newCard(7)),
+			},
+			expected: expected{
+				nbWPlayer: 0,
+				wPlayer:   nil,
+				wDealer:   player.NewDealer(newCard(1), newCard(7)),
+			},
+		},
+		"draw with player 1 and dealer": {
+			given: Game{
+				Players: []*player.Player{
+					player.NewPlayer(newCard(1), newCard(9)),
+					player.NewPlayer(newCard(9), newCard(9), newCard(10)),
+				},
+				Dealer: player.NewDealer(newCard(10), newCard(10)),
+			},
+			expected: expected{
+				nbWPlayer: 1,
+				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
+				wDealer:   player.NewDealer(newCard(10), newCard(10)),
+			},
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			actualNbWPlayer, actualWPlayer, actualWDealer := tt.given.getWinner()
+			if tt.expected.wDealer != nil && (actualWDealer == nil || !tt.expected.wDealer.Player.Equals(&actualWDealer.Player)) {
+				t.Errorf("expected dealer as winner %v, actual %v", tt.expected.wDealer, actualWDealer)
+			}
+			if tt.expected.wPlayer != nil && (actualWPlayer == nil || !tt.expected.wPlayer.Equals(actualWPlayer) || tt.expected.nbWPlayer != actualNbWPlayer) {
+				t.Errorf("expected player %d as winner %v, actual player %d as winner %v", tt.expected.nbWPlayer, tt.expected.wPlayer, actualNbWPlayer, actualWPlayer)
+			}
+		})
+	}
+}
+
+func newCard(rank int) deck.Card {
+	return deck.Card{Suit: deck.Spade, Rank: deck.Rank(rank)}
 }

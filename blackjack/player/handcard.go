@@ -30,12 +30,12 @@ func (h *HandCard) Add(c deck.Card) {
 // IsBlackJack checks if the current cards are a blackjack
 // combinaison which 2 cards & Ace + face card (J/Q/K)
 func (h HandCard) IsBlackJack() bool {
-	return len(h.Cards) == 2 && h.compute() == topScore
+	return len(h.Cards) == 2 && h.Compute() == topScore
 }
 
 // IsOver returns true if the score is over 21
 func (h HandCard) IsOver() bool {
-	return h.compute() > topScore
+	return h.Compute() > topScore
 }
 
 // CompareTo to h2 in term of being closest to the topScore
@@ -55,8 +55,8 @@ func (h HandCard) CompareTo(to HandCard) int {
 	if to.IsOver() {
 		return 1
 	}
-	val1 := h.compute()
-	val2 := to.compute()
+	val1 := h.Compute()
+	val2 := to.Compute()
 	final1 := math.Abs(float64(topScore - val1))
 	final2 := math.Abs(float64(topScore - val2))
 
@@ -74,12 +74,13 @@ func (h HandCard) CompareTo(to HandCard) int {
 	return -1
 }
 
-// ToASCII renders the cards in ASCII art
-func (h HandCard) ToASCII() string {
-	return deck.ToASCII(h.Cards)
+// Print renders the cards in ASCII art and with colors
+func (h HandCard) Print() string {
+	return deck.Print(h.Cards)
 }
 
-func (h HandCard) compute() int {
+// Compute the number of point the handcard has
+func (h HandCard) Compute() int {
 	result := 0
 	nbAces := 0
 	for _, c := range h.Cards {
@@ -105,4 +106,17 @@ func (h HandCard) compute() int {
 	}
 
 	return result
+}
+
+// Equals checks if the handcard is equals to the given handcard
+func (h HandCard) Equals(to HandCard) bool {
+	if len(h.Cards) != len(to.Cards) {
+		return false
+	}
+	for i := 0; i < len(h.Cards); i++ {
+		if !h.Cards[i].Equals(to.Cards[i]) {
+			return false
+		}
+	}
+	return true
 }

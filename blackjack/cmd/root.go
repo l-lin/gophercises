@@ -39,5 +39,5 @@ func run(cmd *cobra.Command, args []string) {
 	//                           (|
 	//`)
 	g := game.New(nbPlayers)
-	g.Run()
+	g.Run(nbPlayers)
 }
