@@ -7,22 +7,26 @@ import (
 )
 
 func TestCompute(t *testing.T) {
+	type expected struct {
+		score  int
+		isSoft bool
+	}
 	var tests = map[string]struct {
 		given    HandCard
-		expected int
+		expected expected
 	}{
 		"one card of 2": {
 			given: NewHandCard(
 				deck.Card{Rank: deck.Two},
 			),
-			expected: 2,
+			expected: expected{2, false},
 		},
 		"two cards": {
 			given: NewHandCard(
 				deck.Card{Rank: deck.Two},
 				deck.Card{Rank: deck.Five},
 			),
-			expected: 7,
+			expected: expected{7, false},
 		},
 		"three cards exceed 21": {
 			given: NewHandCard(
@@ -30,7 +34,7 @@ func TestCompute(t *testing.T) {
 				deck.Card{Rank: deck.Five},
 				deck.Card{Rank: deck.Jack},
 			),
-			expected: 17,
+			expected: expected{17, false},
 		},
 		"three cards with ace": {
 			given: NewHandCard(
@@ -38,7 +42,7 @@ func TestCompute(t *testing.T) {
 				deck.Card{Rank: deck.Five},
 				deck.Card{Rank: deck.Jack},
 			),
-			expected: 16,
+			expected: expected{16, false},
 		},
 		"multiple aces exceed 21": {
 			given: NewHandCard(
@@ -48,7 +52,7 @@ func TestCompute(t *testing.T) {
 				deck.Card{Rank: deck.King},
 				deck.Card{Rank: deck.Ace},
 			),
-			expected: 23,
+			expected: expected{23, false},
 		},
 		"multiple aces with different values": {
 			given: NewHandCard(
@@ -57,25 +61,44 @@ func TestCompute(t *testing.T) {
 				deck.Card{Rank: deck.Ace},
 				deck.Card{Rank: deck.Ace},
 			),
-			expected: 23,
+			expected: expected{23, true},
 		},
 		"blackjack": {
 			given: NewHandCard(
 				deck.Card{Rank: deck.Ace},
 				deck.Card{Rank: deck.King},
 			),
-			expected: 21,
+			expected: expected{21, true},
+		},
+		"soft 17": {
+			given: NewHandCard(
+				deck.Card{Rank: deck.Ace},
+				deck.Card{Rank: deck.Six},
+			),
+			expected: expected{17, true},
+		},
+		"soft with multiple aces": {
+			given: NewHandCard(
+				deck.Card{Rank: deck.Ace},
+				deck.Card{Rank: deck.Four},
+				deck.Card{Rank: deck.Ace},
+				deck.Card{Rank: deck.Five},
+			),
+			expected: expected{21, true},
 		},
 		"no cards": {
 			given:    NewHandCard(),
-			expected: 0,
+			expected: expected{0, false},
 		},
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			actual := tt.given.Compute()
-			if actual != tt.expected {
-				t.Errorf("expected %d, actual %d", tt.expected, actual)
+			actualScore, actualIsSoft := tt.given.Compute()
+			if actualScore != tt.expected.score {
+				t.Errorf("expected %d, actual %d", tt.expected.score, actualScore)
+			}
+			if actualIsSoft != tt.expected.isSoft {
+				t.Errorf("expected isSoft %v, actual isSoft %v", tt.expected.isSoft, actualIsSoft)
 			}
 		})
 	}
@@ -160,6 +183,19 @@ func TestCompareTo(t *testing.T) {
 				NewHandCard(
 					deck.Card{Rank: deck.Jack},
 					deck.Card{Rank: deck.Seven},
+				),
+			},
+			expected: -1,
+		},
+		"less with ace": {
+			given: []HandCard{
+				NewHandCard(
+					deck.Card{Rank: deck.Ace},
+					deck.Card{Rank: deck.Eight},
+				),
+				NewHandCard(
+					deck.Card{Rank: deck.Ace},
+					deck.Card{Rank: deck.Nine},
 				),
 			},
 			expected: -1,

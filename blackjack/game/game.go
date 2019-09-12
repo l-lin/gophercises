@@ -11,6 +11,11 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
+const (
+	nbCardsOnStart = 2
+	maxDealerScore = 16
+)
+
 // Game represents a blackjack game
 type Game struct {
 	Dealer  *player.Dealer
@@ -18,17 +23,6 @@ type Game struct {
 	Cards   []deck.Card
 	Score   *Score
 }
-
-// Score of the players and dealer
-type Score struct {
-	Players map[int]int
-	Dealer  int
-}
-
-const (
-	nbCardsOnStart = 2
-	maxNbCards     = 10
-)
 
 // New game
 func New(nbPlayers int) Game {
@@ -40,7 +34,7 @@ func New(nbPlayers int) Game {
 // Run blackjack game
 func (g *Game) Run(nbPlayers int) {
 	round := 1
-	for len(g.Cards) > maxNbCards {
+	for len(g.Cards) > nbCardsOnStart*(nbPlayers+1) {
 		time.Sleep(time.Second * 1)
 		g.init(nbPlayers)
 		g.runRound(round)
@@ -56,12 +50,14 @@ func (g *Game) runRound(round int) {
 		g.displayCards()
 		g.playersTurn()
 	}
-	fmt.Println(aurora.BrightBlack("DEALER TURN").BgBrightYellow().Bold())
 	g.dealerSetUp()
-	for !g.hasDealerFinished() {
-		time.Sleep(time.Second * 1)
-		g.displayDealerCards()
-		g.dealerTurn()
+	if !g.isEveryPlayersOver() {
+		fmt.Println(aurora.BrightBlack("DEALER TURN").BgBrightYellow().Bold())
+		for !g.hasDealerFinished() {
+			time.Sleep(time.Second * 1)
+			g.displayDealerCards()
+			g.dealerTurn()
+		}
 	}
 	time.Sleep(time.Second * 1)
 	g.displayCards()
@@ -93,13 +89,15 @@ func (g *Game) displayDealerCards() {
 	if g.Dealer.HandCard.Cards[0].Hidden {
 		fmt.Printf("Dealer:\n%s\n", g.Dealer.HandCard.Print())
 	} else {
-		fmt.Printf("Dealer (%d points):\n%s\n", g.Dealer.HandCard.Compute(), g.Dealer.HandCard.Print())
+		dealerScore, _ := g.Dealer.HandCard.Compute()
+		fmt.Printf("Dealer (%d points):\n%s\n", dealerScore, g.Dealer.HandCard.Print())
 	}
 }
 
 func (g *Game) displayPlayerCards() {
 	for j, p := range g.Players {
-		fmt.Printf("Player %d (%d points):\n%s\n", j+1, p.HandCard.Compute(), p.HandCard.Print())
+		score, _ := p.HandCard.Compute()
+		fmt.Printf("Player %d (%d points):\n%s\n", j+1, score, p.HandCard.Print())
 	}
 }
 
@@ -107,6 +105,11 @@ func (g *Game) playersTurn() {
 	for i, p := range g.Players {
 		playerNb := i + 1
 		if p.Finished {
+			continue
+		}
+		// no cards left, do not continue
+		if len(g.Cards) == 0 {
+			p.Finished = true
 			continue
 		}
 		prompt := promptui.Select{
@@ -124,7 +127,8 @@ func (g *Game) playersTurn() {
 				log.Fatal(err)
 			}
 			p.HandCard.Add(*c)
-			fmt.Printf("Player %d, you picked the following which gives you %d points:\n%s\n", playerNb, p.HandCard.Compute(), c.Print())
+			score, _ := p.HandCard.Compute()
+			fmt.Printf("Player %d, you picked the following which gives you %d points:\n%s\n", playerNb, score, c.Print())
 			if p.HandCard.IsOver() {
 				fmt.Println(aurora.Sprintf(aurora.BrightRed("Player %d, you have exceeded max score! You lose!"), playerNb))
 				p.Finished = true
@@ -137,19 +141,26 @@ func (g *Game) playersTurn() {
 
 func (g *Game) dealerSetUp() {
 	g.Dealer.HandCard.Cards[0].Hidden = false
-	if g.Dealer.Player.HandCard.Compute() > 16 {
+	score, _ := g.Dealer.Player.HandCard.Compute()
+	if score > maxDealerScore {
 		g.Dealer.Player.Finished = true
 	}
 }
 
 func (g *Game) dealerTurn() {
+	// no cards left, do not play
+	if len(g.Cards) == 0 {
+		g.Dealer.Player.Finished = true
+		return
+	}
 	c, err := g.hit()
 	if err != nil {
 		log.Fatal(err)
 	}
 	g.Dealer.Player.HandCard.Add(*c)
-	fmt.Printf("Dealer has picked the following which gives him %d points:\n%s\n", g.Dealer.Player.HandCard.Compute(), c.Print())
-	if g.Dealer.Player.HandCard.Compute() > 16 {
+	score, isSoft := g.Dealer.Player.HandCard.Compute()
+	fmt.Printf("Dealer has picked the following which gives him %d points:\n%s\n", score, c.Print())
+	if score > maxDealerScore && !isSoft {
 		g.Dealer.Player.Finished = true
 	}
 	time.Sleep(time.Second * 1)
@@ -211,7 +222,7 @@ func (g *Game) getWinner() (int, *player.Player, *player.Dealer) {
 	}
 
 	result := wPlayer.CompareTo(&g.Dealer.Player)
-	if result < 1 { // dealer wins
+	if result < 0 { // dealer wins
 		return 0, nil, g.Dealer
 	} else if result == 0 { // player and dealer are not over and it's a draw
 		return nbWPlayer + 1, wPlayer, g.Dealer
@@ -220,41 +231,11 @@ func (g *Game) getWinner() (int, *player.Player, *player.Dealer) {
 	return nbWPlayer + 1, wPlayer, nil
 }
 
-func newScore(nbPlayers int) *Score {
-	scores := make(map[int]int, nbPlayers)
-	for i := 1; i <= nbPlayers; i++ {
-		scores[i] = 0
-	}
-	return &Score{Players: scores, Dealer: 0}
-}
-func (s *Score) diplay() {
-	fmt.Println("")
-	for i, v := range s.Players {
-		fmt.Println(aurora.BrightBlack(fmt.Sprintf("Player %d: %d wins", i, v)).BgBrightBlue().Bold())
-	}
-	fmt.Println(aurora.BrightBlack(fmt.Sprintf("Dealer: %d wins", s.Dealer)).BgBrightYellow().Bold())
-	fmt.Println("")
-}
-
-func initDealer(cards []deck.Card) ([]deck.Card, *player.Dealer) {
-	dealerCards := make([]deck.Card, nbCardsOnStart)
-	for i := 0; i < nbCardsOnStart; i++ {
-		dealerCards[i] = cards[i]
-	}
-	dealerCards[0].Hidden = true
-	dealer := player.NewDealer(dealerCards...)
-	return cards[nbCardsOnStart:], dealer
-}
-
-func initPlayers(cards []deck.Card, nbPlayers int) ([]deck.Card, []*player.Player) {
-	players := make([]*player.Player, nbPlayers)
-	for i := 0; i < nbPlayers; i++ {
-		playerCards := make([]deck.Card, nbCardsOnStart)
-		for j := 0; j < nbCardsOnStart; j++ {
-			playerCards[j] = cards[i+j]
+func (g *Game) isEveryPlayersOver() bool {
+	for _, p := range g.Players {
+		if !p.HandCard.IsOver() {
+			return false
 		}
-		players[i] = player.NewPlayer(playerCards...)
-		cards = cards[nbCardsOnStart:]
 	}
-	return cards, players
+	return true
 }
