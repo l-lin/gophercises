@@ -8,14 +8,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var nbPlayers int
+const maxNbPlayers = 2
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "blackjack",
-	Short: "Simple blackjack game",
-	Run:   run,
-}
+var (
+	nbPlayers int
+	rootCmd   = &cobra.Command{
+		Use:   "blackjack",
+		Short: "Simple blackjack game",
+		Run:   run,
+	}
+)
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -38,6 +40,10 @@ func run(cmd *cobra.Command, args []string) {
 	//  |(_/ |_/ \/|_/ \__/ | \/  |/ \/|_/ \__/ | \/
 	//                           (|
 	//`)
+	if nbPlayers > maxNbPlayers {
+		fmt.Printf("There can only have %d players\n", maxNbPlayers)
+		os.Exit(1)
+	}
 	g := game.New(nbPlayers)
-	g.Run(nbPlayers)
+	g.Run()
 }

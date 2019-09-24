@@ -52,7 +52,7 @@ func TestHit(t *testing.T) {
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			g := Game{Cards: tt.given}
-			c, err := g.hit()
+			c, err := g.pickCard()
 			if tt.expected.err != nil && err == nil {
 				t.Errorf("expected error %v, actual error %v", tt.expected.err, err)
 			}
@@ -68,7 +68,7 @@ func TestHit(t *testing.T) {
 
 func TestGetWinner(t *testing.T) {
 	type expected struct {
-		nbWPlayer int
+		wPlayerNb int
 		wPlayer   *player.Player
 		wDealer   *player.Dealer
 	}
@@ -85,7 +85,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(1), newCard(8)),
 			},
 			expected: expected{
-				nbWPlayer: 1,
+				wPlayerNb: 1,
 				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
 				wDealer:   nil,
 			},
@@ -99,7 +99,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(1), newCard(8)),
 			},
 			expected: expected{
-				nbWPlayer: 2,
+				wPlayerNb: 2,
 				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
 				wDealer:   nil,
 			},
@@ -113,7 +113,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(1), newCard(9)),
 			},
 			expected: expected{
-				nbWPlayer: 0,
+				wPlayerNb: -1,
 				wPlayer:   nil,
 				wDealer:   player.NewDealer(newCard(1), newCard(9)),
 			},
@@ -127,7 +127,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(1), newCard(7)),
 			},
 			expected: expected{
-				nbWPlayer: 1,
+				wPlayerNb: 1,
 				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
 				wDealer:   nil,
 			},
@@ -141,7 +141,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(1), newCard(7)),
 			},
 			expected: expected{
-				nbWPlayer: 2,
+				wPlayerNb: 2,
 				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
 				wDealer:   nil,
 			},
@@ -155,7 +155,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(1), newCard(7)),
 			},
 			expected: expected{
-				nbWPlayer: 0,
+				wPlayerNb: -1,
 				wPlayer:   nil,
 				wDealer:   player.NewDealer(newCard(1), newCard(7)),
 			},
@@ -169,7 +169,7 @@ func TestGetWinner(t *testing.T) {
 				Dealer: player.NewDealer(newCard(10), newCard(10)),
 			},
 			expected: expected{
-				nbWPlayer: 1,
+				wPlayerNb: 1,
 				wPlayer:   player.NewPlayer(newCard(1), newCard(9)),
 				wDealer:   player.NewDealer(newCard(10), newCard(10)),
 			},
@@ -177,12 +177,12 @@ func TestGetWinner(t *testing.T) {
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			actualNbWPlayer, actualWPlayer, actualWDealer := tt.given.getWinner()
+			actualWPlayerNb, actualWPlayer, actualWDealer := tt.given.getWinner()
 			if tt.expected.wDealer != nil && (actualWDealer == nil || !tt.expected.wDealer.Player.Equals(&actualWDealer.Player)) {
 				t.Errorf("expected dealer as winner %v, actual %v", tt.expected.wDealer, actualWDealer)
 			}
-			if tt.expected.wPlayer != nil && (actualWPlayer == nil || !tt.expected.wPlayer.Equals(actualWPlayer) || tt.expected.nbWPlayer != actualNbWPlayer) {
-				t.Errorf("expected player %d as winner %v, actual player %d as winner %v", tt.expected.nbWPlayer, tt.expected.wPlayer, actualNbWPlayer, actualWPlayer)
+			if tt.expected.wPlayer != nil && (actualWPlayer == nil || !tt.expected.wPlayer.Equals(actualWPlayer) || tt.expected.wPlayerNb != actualWPlayerNb) {
+				t.Errorf("expected player %d as winner %v, actual player %d as winner %v", tt.expected.wPlayerNb, tt.expected.wPlayer, actualWPlayerNb, actualWPlayer)
 			}
 		})
 	}

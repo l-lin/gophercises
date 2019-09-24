@@ -81,6 +81,11 @@ func (h HandCard) Print() string {
 	return deck.Print(h.Cards)
 }
 
+// ToASCII renders the cards in ASCII art
+func (h HandCard) ToASCII() string {
+	return deck.ToASCII(h.Cards)
+}
+
 // Compute the number of point the handcard has and whether it's a soft handcard or not
 // A soft handcard is a handcard with a score in which 11 of the points comes from an
 // Ace card

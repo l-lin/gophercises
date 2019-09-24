@@ -2,8 +2,7 @@ package game
 
 import (
 	"fmt"
-
-	"github.com/logrusorgru/aurora"
+	"strings"
 )
 
 // Score of the players and dealer
@@ -20,11 +19,14 @@ func newScore(nbPlayers int) *Score {
 	return &Score{Players: scores, Dealer: 0}
 }
 
-func (s *Score) diplay() {
-	fmt.Println("")
-	for i, v := range s.Players {
-		fmt.Println(aurora.BrightBlack(fmt.Sprintf("Player %d: %d wins", i, v)).BgBrightBlue().Bold())
+func (s *Score) print() string {
+	var b strings.Builder
+	b.WriteString(fmt.Sprintf("[Dealer: %d wins](fg:yellow,mod:bold)\n", s.Dealer))
+	for i := 0; i < len(s.Players); i++ {
+		b.WriteString(fmt.Sprintf("[Player %d: %d wins](fg:blue,mod:bold)", i+1, s.Players[i+1]))
+		if i < len(s.Players) {
+			b.WriteString("\n")
+		}
 	}
-	fmt.Println(aurora.BrightBlack(fmt.Sprintf("Dealer: %d wins", s.Dealer)).BgBrightYellow().Bold())
-	fmt.Println("")
+	return b.String()
 }
