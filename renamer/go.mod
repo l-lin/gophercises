@@ -1,4 +1,4 @@
-module github.com/l-lin/renamer
+module github.com/l-lin/gophercises/renamer
 
 go 1.12
 
