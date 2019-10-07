@@ -22,6 +22,7 @@ var (
 		Run:   run,
 	}
 	from, to  string
+	dry       bool
 	renamers  = make(map[string]renamer.Renamer)
 	suffixers = make(map[string]suffixer.Suffixer)
 )
@@ -41,6 +42,7 @@ func init() {
 	renamers["nnn"] = renamer.NewNnnRenamer(3)
 	suffixers["of"] = suffixer.NewOfSuffixer(100)
 	suffixers["nnn"] = suffixer.NewNnnSuffixer(3)
+	rootCmd.Flags().BoolVar(&dry, "dry", false, "dry run")
 	rootCmd.Flags().StringVarP(
 		&from,
 		"from",
@@ -134,7 +136,9 @@ func renameFile(filePath string, s suffixer.Suffixer, r renamer.Renamer) {
 		return
 	}
 	fmt.Printf("%s => %s\n", filePath, newFilePath)
-	if err := os.Rename(filePath, newFilePath); err != nil {
-		log.Fatalln(err)
+	if !dry {
+		if err := os.Rename(filePath, newFilePath); err != nil {
+			log.Fatalln(err)
+		}
 	}
 }
