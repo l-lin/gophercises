@@ -20,6 +20,7 @@ var (
 		Run:   runServe,
 	}
 	port, numStories int
+	timeout          = 10 * time.Second
 )
 
 func init() {
@@ -41,25 +42,10 @@ func runServe(cmd *cobra.Command, args []string) {
 func handler(numStories int, tpl *template.Template) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		var client hn.Client
-		ids, err := client.TopItems()
+		stories, err := getTopStories()
 		if err != nil {
 			http.Error(w, "Failed to load top stories", http.StatusInternalServerError)
 			return
-		}
-		var stories []item
-		for _, id := range ids {
-			hnItem, err := client.GetItem(id)
-			if err != nil {
-				continue
-			}
-			item := parseHNItem(hnItem)
-			if isStoryLink(item) {
-				stories = append(stories, item)
-				if len(stories) >= numStories {
-					break
-				}
-			}
 		}
 		data := templateData{
 			Stories: stories,
@@ -71,6 +57,44 @@ func handler(numStories int, tpl *template.Template) http.HandlerFunc {
 			return
 		}
 	})
+}
+
+func getTopStories() ([]item, error) {
+	var client hn.Client
+	ids, err := client.TopItems()
+	if err != nil {
+		return nil, err
+	}
+	story := make(chan item)
+	stories := []item{}
+	t := time.After(timeout)
+	for j := 0; j < computeNbStoriesToFetch(numStories); j++ {
+		id := ids[j]
+		go func(id int, story chan item) {
+			hnItem, err := client.GetItem(id)
+			if err != nil {
+				return
+			}
+			i := parseHNItem(hnItem)
+			story <- i
+		}(id, story)
+	}
+	for len(stories) < numStories {
+		select {
+		case s := <-story:
+			if isStoryLink(s) {
+				stories = append(stories, s)
+			}
+		case <-t:
+			log.Printf("%v timeout...\n", timeout)
+			return stories, nil
+		}
+	}
+	return stories, nil
+}
+
+func computeNbStoriesToFetch(numStories int) int {
+	return int(float64(numStories) * 1.25)
 }
 
 func isStoryLink(item item) bool {
