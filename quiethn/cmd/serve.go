@@ -5,8 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 
 	"github.com/l-lin/gophercises/quiethn/hn"
@@ -42,7 +40,7 @@ func runServe(cmd *cobra.Command, args []string) {
 func handler(numStories int, tpl *template.Template) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		stories, err := getTopStories()
+		stories, err := hn.GetTopStories(numStories, timeout)
 		if err != nil {
 			http.Error(w, "Failed to load top stories", http.StatusInternalServerError)
 			return
@@ -59,64 +57,7 @@ func handler(numStories int, tpl *template.Template) http.HandlerFunc {
 	})
 }
 
-func getTopStories() ([]item, error) {
-	var client hn.Client
-	ids, err := client.TopItems()
-	if err != nil {
-		return nil, err
-	}
-	story := make(chan item)
-	stories := []item{}
-	t := time.After(timeout)
-	for j := 0; j < computeNbStoriesToFetch(numStories); j++ {
-		id := ids[j]
-		go func(id int, story chan item) {
-			hnItem, err := client.GetItem(id)
-			if err != nil {
-				return
-			}
-			i := parseHNItem(hnItem)
-			story <- i
-		}(id, story)
-	}
-	for len(stories) < numStories {
-		select {
-		case s := <-story:
-			if isStoryLink(s) {
-				stories = append(stories, s)
-			}
-		case <-t:
-			log.Printf("%v timeout...\n", timeout)
-			return stories, nil
-		}
-	}
-	return stories, nil
-}
-
-func computeNbStoriesToFetch(numStories int) int {
-	return int(float64(numStories) * 1.25)
-}
-
-func isStoryLink(item item) bool {
-	return item.Type == "story" && item.URL != ""
-}
-
-func parseHNItem(hnItem hn.Item) item {
-	ret := item{Item: hnItem}
-	url, err := url.Parse(ret.URL)
-	if err == nil {
-		ret.Host = strings.TrimPrefix(url.Hostname(), "www.")
-	}
-	return ret
-}
-
-// item is the same as the hn.Item, but adds the Host field
-type item struct {
-	hn.Item
-	Host string
-}
-
 type templateData struct {
-	Stories []item
+	Stories []hn.Item
 	Time    time.Duration
 }

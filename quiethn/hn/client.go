@@ -4,7 +4,11 @@ package hn
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"net/url"
+	"strings"
+	"time"
 )
 
 const (
@@ -29,7 +33,7 @@ func (c *Client) defaultify() {
 // should map directly to the top 450 things you would see on HN if you visited
 // their site and kept going to the next page.
 //
-// TopItmes does not filter out job listings or anything else, as the type of
+// TopItems does not filter out job listings or anything else, as the type of
 // each item is unknown without further API calls.
 func (c *Client) TopItems() ([]int, error) {
 	c.defaultify()
@@ -83,4 +87,71 @@ type Item struct {
 	// Only one of these should exist
 	Text string `json:"text"`
 	URL  string `json:"url"`
+	// specific attribute
+	Host string
+}
+
+// GetTopStories fetches the HN top stories
+func GetTopStories(numStories int, timeout time.Duration) ([]Item, error) {
+	var client Client
+	ids, err := client.TopItems()
+	if err != nil {
+		return nil, err
+	}
+	type result struct {
+		i Item
+		j int
+	}
+	t := time.After(timeout)
+	computedNbStories := computeNbStoriesToFetch(numStories)
+	items := make([]Item, computedNbStories)
+	resultCh := make(chan result, computedNbStories)
+	for j := 0; j < computedNbStories; j++ {
+		id := ids[j]
+		go func(id, j int, resultCh chan result) {
+			hnItem, err := client.GetItem(id)
+			if err != nil {
+				return
+			}
+			i := parseHNItem(hnItem)
+			resultCh <- result{i, j}
+		}(id, j, resultCh)
+	}
+	nbStoriesFetched := 0
+	for nbStoriesFetched < computedNbStories {
+		select {
+		case r := <-resultCh:
+			nbStoriesFetched++
+			items[r.j] = r.i
+		case <-t:
+			log.Printf("%v timeout...\n", timeout)
+			break
+		}
+	}
+	stories := []Item{}
+	for _, i := range items {
+		if len(stories) >= numStories {
+			break
+		}
+		if isStoryLink(i) {
+			stories = append(stories, i)
+		}
+	}
+	return stories, nil
+}
+
+func computeNbStoriesToFetch(numStories int) int {
+	return int(float64(numStories) * 1.25)
+}
+
+func isStoryLink(item Item) bool {
+	return item.Type == "story" && item.URL != ""
+}
+
+func parseHNItem(item Item) Item {
+	url, err := url.Parse(item.URL)
+	if err == nil {
+		item.Host = strings.TrimPrefix(url.Hostname(), "www.")
+	}
+	return item
 }
