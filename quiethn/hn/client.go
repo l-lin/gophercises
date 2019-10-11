@@ -15,6 +15,8 @@ const (
 	apiBase = "https://hacker-news.firebaseio.com/v0"
 )
 
+var cache = NewCache(30 * time.Second)
+
 // Client is an API client used to interact with the Hacker News API
 type Client struct {
 	// unexported fields...
@@ -53,8 +55,12 @@ func (c *Client) TopItems() ([]int, error) {
 
 // GetItem will return the Item defined by the provided ID.
 func (c *Client) GetItem(id int) (Item, error) {
-	c.defaultify()
+	it := cache.Get(id)
+	if it != nil {
+		return *it, nil
+	}
 	var item Item
+	c.defaultify()
 	resp, err := http.Get(fmt.Sprintf("%s/item/%d.json", c.apiBase, id))
 	if err != nil {
 		return item, err
@@ -65,6 +71,7 @@ func (c *Client) GetItem(id int) (Item, error) {
 	if err != nil {
 		return item, err
 	}
+	cache.Add(item)
 	return item, nil
 }
 
