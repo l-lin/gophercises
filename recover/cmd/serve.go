@@ -43,6 +43,7 @@ func panicDemo(w http.ResponseWriter, r *http.Request) {
 }
 
 func panicAfterDemo(w http.ResponseWriter, r *http.Request) {
+	// Write() is called before WriteHeader() => that's why it's a HTTP 200 that is returned
 	fmt.Fprint(w, "<h1>Hello!</h1>")
 	funcThatPanics()
 }
@@ -68,6 +69,38 @@ func handler(h http.Handler) http.HandlerFunc {
 				}
 			}
 		}()
-		h.ServeHTTP(w, req)
+		// By having our own ResponseWriter, we are not calling w.Write() first, but
+		// w.WriteHeader() => we can safely return HTTP 500
+		rw := &responseWriter{ResponseWriter: w}
+		h.ServeHTTP(rw, req)
+		rw.flush()
 	}
+}
+
+type responseWriter struct {
+	http.ResponseWriter
+	w      [][]byte
+	status int
+}
+
+func (r *responseWriter) Write(b []byte) (int, error) {
+	r.w = append(r.w, b)
+	return len(b), nil
+}
+
+func (r *responseWriter) WriteHeader(status int) {
+	r.status = status
+}
+
+func (r *responseWriter) flush() error {
+	if r.status != 0 {
+		r.ResponseWriter.WriteHeader(r.status)
+	}
+	for _, write := range r.w {
+		_, err := r.ResponseWriter.Write(write)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
