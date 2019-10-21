@@ -7,6 +7,7 @@ import (
 	"runtime/debug"
 	"strconv"
 
+	"github.com/l-lin/gophercises/recoverchroma/source"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +30,8 @@ func runServe(cmd *cobra.Command, args []string) {
 	mux.HandleFunc("/panic/", panicDemo)
 	mux.HandleFunc("/panic-after/", panicAfterDemo)
 	mux.HandleFunc("/", hello)
+	mux.HandleFunc("/debug/", sourceCode)
+	log.Printf("starting web server on port %d", port)
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), devMw(mux)))
 }
 
@@ -62,4 +65,19 @@ func funcThatPanics() {
 
 func hello(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "<h1>Hello!</h1>")
+}
+
+func sourceCode(w http.ResponseWriter, r *http.Request) {
+	paths, ok := r.URL.Query()["path"]
+	if !ok || len(paths[0]) < 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "missing query parameter 'query'")
+		return
+	}
+	path := paths[0]
+	f, err := source.GetFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f.CopyTo(w)
 }
