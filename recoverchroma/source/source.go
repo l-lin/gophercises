@@ -3,9 +3,14 @@ package source
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/alecthomas/chroma/formatters"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
 )
 
 // File represents the source code of our project
@@ -34,6 +39,33 @@ func (f *File) CopyTo(w io.Writer) error {
 	}
 	io.Copy(w, r)
 	return nil
+}
+
+// RenderTo copies and highlight code to the given writer
+func (f *File) RenderTo(w io.Writer) error {
+	r, err := os.Open(f.Path)
+	if err != nil {
+		return err
+	}
+	lexer := lexers.Match(f.Path)
+	if lexer == nil {
+		lexer = lexers.Fallback
+	}
+	style := styles.Get("dracula")
+	if style == nil {
+		style = styles.Fallback
+	}
+	formatter := formatters.Get("html")
+	if formatter == nil {
+		formatter = formatters.Fallback
+	}
+	contents, err := ioutil.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	iterator, err := lexer.Tokenise(nil, string(contents))
+	err = formatter.Format(w, style, iterator)
+	return err
 }
 
 func exists(path string) bool {

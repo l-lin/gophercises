@@ -21,3 +21,18 @@ func TestCopyTo(t *testing.T) {
 		t.Errorf("Nothing was copied")
 	}
 }
+
+func TestRenderTo(t *testing.T) {
+	f, err := GetFile(path)
+	if err != nil {
+		t.Errorf("Could not find file '%s'. Error was: %s", path, err)
+	}
+	w := bytes.NewBufferString("")
+	err = f.RenderTo(w)
+	if err != nil {
+		t.Errorf("Could not copy content of file '%s'. Error was: %s", path, err)
+	}
+	if len(w.String()) == 0 {
+		t.Errorf("Nothing was copied")
+	}
+}

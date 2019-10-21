@@ -79,5 +79,5 @@ func sourceCode(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f.CopyTo(w)
+	f.RenderTo(w)
 }
