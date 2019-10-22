@@ -28,7 +28,7 @@ func TestRenderTo(t *testing.T) {
 		t.Errorf("Could not find file '%s'. Error was: %s", path, err)
 	}
 	w := bytes.NewBufferString("")
-	err = f.RenderTo(w)
+	err = f.RenderTo(w, 1)
 	if err != nil {
 		t.Errorf("Could not copy content of file '%s'. Error was: %s", path, err)
 	}

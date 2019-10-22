@@ -71,13 +71,26 @@ func sourceCode(w http.ResponseWriter, r *http.Request) {
 	paths, ok := r.URL.Query()["path"]
 	if !ok || len(paths[0]) < 1 {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "missing query parameter 'query'")
+		fmt.Fprintf(w, "missing query parameter 'path'")
 		return
+	}
+	lineNbStr, ok := r.URL.Query()["lineNb"]
+	if !ok || len(lineNbStr[0]) < 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "missing query parameter 'lineNb'")
+		return
+	}
+	lineNb, err := strconv.Atoi(lineNbStr[0])
+	if err != nil {
+		log.Fatal(err)
 	}
 	path := paths[0]
 	f, err := source.GetFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
-	f.RenderTo(w)
+	err = f.RenderTo(w, lineNb)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

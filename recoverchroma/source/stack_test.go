@@ -12,7 +12,7 @@ func TestRenderStackLine(t *testing.T) {
 	}{
 		"basic": {
 			given: `	/home/llin/apps/go/src/runtime/debug/stack.go:24 +0x9d`,
-			expected: `	<a href="/debug/?path=/home/llin/apps/go/src/runtime/debug/stack.go">/home/llin/apps/go/src/runtime/debug/stack.go:24 +0x9d</a>`,
+			expected: `	<a href="/debug/?lineNb=24&path=%2Fhome%2Fllin%2Fapps%2Fgo%2Fsrc%2Fruntime%2Fdebug%2Fstack.go">/home/llin/apps/go/src/runtime/debug/stack.go:24 +0x9d</a>`,
 		},
 		"no link": {
 			given:    `goroutine 19 [running]:`,
@@ -27,7 +27,7 @@ func TestRenderStackLine(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			actual := renderStackLine(tt.given)
 			if actual != tt.expected {
-				t.Errorf("expected %v, actual %v", tt.expected, actual)
+				t.Errorf("expected:\n%v\nactual:\n%v", tt.expected, actual)
 			}
 		})
 	}
@@ -52,15 +52,15 @@ github.com/l-lin/gophercises/recoverchroma/cmd.panicDemo(0xbd1c80, 0xc000110000,
 	/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:54 +0x3a`,
 			expected: `goroutine 19 [running]:
 runtime/debug.Stack(0xc000055ae0, 0x1, 0x1)
-	<a href="/debug/?path=/home/llin/apps/go/src/runtime/debug/stack.go">/home/llin/apps/go/src/runtime/debug/stack.go:24 +0x9d</a>
+	<a href="/debug/?lineNb=24&path=%2Fhome%2Fllin%2Fapps%2Fgo%2Fsrc%2Fruntime%2Fdebug%2Fstack.go">/home/llin/apps/go/src/runtime/debug/stack.go:24 +0x9d</a>
 github.com/l-lin/gophercises/recoverchroma/cmd.devMw.func1.1(0xbd1c80, 0xc000110000)
-	<a href="/debug/?path=/home/llin/perso/gophercises/recoverchroma/cmd/serve.go">/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:43 +0xa3</a>
+	<a href="/debug/?lineNb=43&path=%2Fhome%2Fllin%2Fperso%2Fgophercises%2Frecoverchroma%2Fcmd%2Fserve.go">/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:43 +0xa3</a>
 panic(0x996a60, 0xbbb9a0)
-	<a href="/debug/?path=/home/llin/apps/go/src/runtime/panic.go">/home/llin/apps/go/src/runtime/panic.go:522 +0x1b5</a>
+	<a href="/debug/?lineNb=522&path=%2Fhome%2Fllin%2Fapps%2Fgo%2Fsrc%2Fruntime%2Fpanic.go">/home/llin/apps/go/src/runtime/panic.go:522 +0x1b5</a>
 github.com/l-lin/gophercises/recoverchroma/cmd.funcThatPanics(...)
-	<a href="/debug/?path=/home/llin/perso/gophercises/recoverchroma/cmd/serve.go">/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:63</a>
+	<a href="/debug/?lineNb=63&path=%2Fhome%2Fllin%2Fperso%2Fgophercises%2Frecoverchroma%2Fcmd%2Fserve.go">/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:63</a>
 github.com/l-lin/gophercises/recoverchroma/cmd.panicDemo(0xbd1c80, 0xc000110000, 0xc000098200)
-	<a href="/debug/?path=/home/llin/perso/gophercises/recoverchroma/cmd/serve.go">/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:54 +0x3a</a>`,
+	<a href="/debug/?lineNb=54&path=%2Fhome%2Fllin%2Fperso%2Fgophercises%2Frecoverchroma%2Fcmd%2Fserve.go">/home/llin/perso/gophercises/recoverchroma/cmd/serve.go:54 +0x3a</a>`,
 		},
 	}
 	for name, tt := range tests {

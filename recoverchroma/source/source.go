@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/alecthomas/chroma/formatters"
+	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 )
@@ -42,7 +42,7 @@ func (f *File) CopyTo(w io.Writer) error {
 }
 
 // RenderTo copies and highlight code to the given writer
-func (f *File) RenderTo(w io.Writer) error {
+func (f *File) RenderTo(w io.Writer, lineNb int) error {
 	r, err := os.Open(f.Path)
 	if err != nil {
 		return err
@@ -55,10 +55,10 @@ func (f *File) RenderTo(w io.Writer) error {
 	if style == nil {
 		style = styles.Fallback
 	}
-	formatter := formatters.Get("html")
-	if formatter == nil {
-		formatter = formatters.Fallback
+	ran := [][2]int{
+		[2]int{lineNb, lineNb},
 	}
+	formatter := html.New(html.Standalone(), html.WithLineNumbers(), html.HighlightLines(ran))
 	contents, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err

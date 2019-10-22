@@ -2,6 +2,7 @@ package source
 
 import (
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -27,5 +28,9 @@ func renderStackLine(line string) string {
 		return line
 	}
 	p := string(matches[0][1])
-	return fmt.Sprintf(`	<a href="/debug/?path=%s">%s</a>`, p, strings.Trim(line, "	"))
+	lineNb := string(matches[0][2])
+	v := url.Values{}
+	v.Set("path", p)
+	v.Set("lineNb", lineNb)
+	return fmt.Sprintf(`	<a href="/debug/?%s">%s</a>`, v.Encode(), strings.Trim(line, "	"))
 }
