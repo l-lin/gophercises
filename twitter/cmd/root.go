@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/l-lin/commuting-traffic-info/config"
+	"github.com/l-lin/gophercises/twitter/twitter"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -19,6 +21,7 @@ var (
 		Use:   "twitter",
 		Short: "A twitter contest CLI to determine who is the winner from retweeters",
 		Run:   run,
+		Args:  cobra.MinimumNArgs(1),
 	}
 )
 
@@ -32,6 +35,15 @@ func Execute() {
 }
 
 func run(cmd *cobra.Command, args []string) {
+	tweetID := args[0]
+	retweetsResultCh := make(chan *twitter.RetweetsResult)
+	go twitter.GetRetweets(retweetsResultCh, tweetID)
+	result := <-retweetsResultCh
+	if result.Error != nil {
+		log.Fatalln(result.Error)
+	}
+	d, _ := json.Marshal(result.Retweets)
+	fmt.Println(string(d))
 }
 
 func init() {
