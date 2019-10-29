@@ -65,6 +65,7 @@ github.com/kyokomi/emoji v2.1.0+incompatible h1:+DYU2RgpI6OHG4oQkM5KlqD3Wd3UPEsX
 github.com/kyokomi/emoji v2.1.0+incompatible/go.mod h1:mZ6aGCD7yk8j6QY6KICwnZ2pxoszVseX1DNoGtU2tBA=
 github.com/l-lin/commuting-traffic-info v0.0.0-20190627074249-9cd47dc7946b h1:iwBVZair8NxDHZTPPPNkDcHNFpHGzdo2WpI7N0nPPjI=
 github.com/l-lin/commuting-traffic-info v0.0.0-20190627074249-9cd47dc7946b/go.mod h1:8vxQFBihGei83pfo25v++x8ie8yV9Ky84D26rElN+ZA=
+github.com/l-lin/gophercises v0.0.0-20191023074301-6a9b131c1633 h1:RWkyBMPScLN+4wup7zERCLWe/vl4YQdeuk82ZJY0xas=
 github.com/logrusorgru/aurora v0.0.0-20190428105938-cea283e61946/go.mod h1:7rIyQOR62GCctdiQpZ/zOJlFyk6y+94wXzv6RNZgaR4=
 github.com/logrusorgru/aurora v0.0.0-20191017060258-dc85c304c434 h1:im9kkmH0WWwxzegiv18gSUJbuXR9y028rXrWuPp6Jug=
 github.com/logrusorgru/aurora v0.0.0-20191017060258-dc85c304c434/go.mod h1:7rIyQOR62GCctdiQpZ/zOJlFyk6y+94wXzv6RNZgaR4=

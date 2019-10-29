@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/l-lin/gophercises/twitter/config"
+	"github.com/l-lin/gophercises/twitter/user"
 )
 
 const (
@@ -20,20 +21,23 @@ var client = &http.Client{Timeout: time.Second * 10}
 
 // Retweet of a tweet
 type Retweet struct {
-	ID   string `json:"id_str"`
-	User `json:"user"`
-}
-
-// User of a tweet
-type User struct {
-	ID   string `json:"id_str"`
-	Name string `json:"name"`
+	ID        string `json:"id_str"`
+	user.User `json:"user"`
 }
 
 // RetweetsResult of the request to find the retweets
 type RetweetsResult struct {
 	Retweets []Retweet
 	Error    error
+}
+
+// GetUniqueUsers filter unique users from the retweets
+func (r *RetweetsResult) GetUniqueUsers() []user.User {
+	users := make([]user.User, len(r.Retweets))
+	for i, r := range r.Retweets {
+		users[i] = r.User
+	}
+	return user.UniqueUsers(users)
 }
 
 // GetRetweets for the given tweet id
@@ -59,7 +63,7 @@ func GetRetweets(result chan *RetweetsResult, tweetID string) {
 		return
 	}
 	if resp.StatusCode != 200 {
-		result <- &RetweetsResult{Retweets: nil, Error: fmt.Errorf("Could not authenticate. Error status was %d and response body was '%s'", resp.StatusCode, string(body))}
+		result <- &RetweetsResult{Retweets: nil, Error: fmt.Errorf("Error status was %d and response body was '%s'", resp.StatusCode, string(body))}
 		return
 	}
 	var data []Retweet
