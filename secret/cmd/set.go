@@ -15,18 +15,15 @@ var (
 		Use:   "set",
 		Short: "Set the secret",
 		Args:  cobra.ExactArgs(2),
-		Run:   run,
+		Run:   runSet,
 	}
-	encodingKey string
 )
 
 func init() {
 	rootCmd.AddCommand(setCmd)
-	setCmd.Flags().StringVarP(&encodingKey, "encoding-key", "k", "", "encoding key to encrypt the secret")
-	setCmd.MarkFlagRequired("encoding-key")
 }
 
-func run(cmd *cobra.Command, args []string) {
+func runSet(cmd *cobra.Command, args []string) {
 	r := &file.Repository{FilePath: filePath}
 	service := set.New(r)
 	cipherHex, err := encrypt.Encrypt(encodingKey, args[1])

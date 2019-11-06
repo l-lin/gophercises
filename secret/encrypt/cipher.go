@@ -11,12 +11,12 @@ import (
 	"io"
 )
 
-// Encrypt will take in a key and plaintext and return a hex representation
+// Encrypt will take in an encodingKey and plaintext and return a hex representation
 // of the encrypted value.
 // This code is based on the standard library examples at:
 //   - https://golang.org/pkg/crypto/cipher/#NewCFBEncrypter
-func Encrypt(key, plaintext string) (string, error) {
-	block, err := newCipherBlock(key)
+func Encrypt(encodingKey, plaintext string) (string, error) {
+	block, err := newCipherBlock(encodingKey)
 	if err != nil {
 		return "", err
 	}
@@ -33,12 +33,12 @@ func Encrypt(key, plaintext string) (string, error) {
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-// Decrypt will take in a key and a cipherHex (hex representation of
+// Decrypt will take in an encodingKey and a cipherHex (hex representation of
 // the ciphertext) and decrypt it.
 // This code is based on the standard library examples at:
 //   - https://golang.org/pkg/crypto/cipher/#NewCFBDecrypter
-func Decrypt(key, cipherHex string) (string, error) {
-	block, err := newCipherBlock(key)
+func Decrypt(encodingKey, cipherHex string) (string, error) {
+	block, err := newCipherBlock(encodingKey)
 	if err != nil {
 		return "", err
 	}
@@ -61,9 +61,9 @@ func Decrypt(key, cipherHex string) (string, error) {
 	return string(ciphertext), nil
 }
 
-func newCipherBlock(key string) (cipher.Block, error) {
+func newCipherBlock(encodingKey string) (cipher.Block, error) {
 	hasher := md5.New()
-	fmt.Fprint(hasher, key)
+	fmt.Fprint(hasher, encodingKey)
 	cipherKey := hasher.Sum(nil)
 	return aes.NewCipher(cipherKey)
 }

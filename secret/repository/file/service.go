@@ -2,6 +2,7 @@ package file
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -35,6 +36,30 @@ func (r *Repository) Set(s *secret.Secret) error {
 	}
 	ioutil.WriteFile(r.FilePath, result, 0600)
 	return nil
+}
+
+// Get the secret from the given key and encoding key
+func (r *Repository) Get(key string) (*secret.Secret, error) {
+	if !exists(r.FilePath) {
+		return nil, fmt.Errorf("%s not found", r.FilePath)
+	}
+
+	b, err := ioutil.ReadFile(r.FilePath)
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]string
+	if err = json.Unmarshal(b, &m); err != nil {
+		return nil, err
+	}
+	cipherHex, ok := m[key]
+	if !ok {
+		return nil, fmt.Errorf("No secret found for key %s", key)
+	}
+	return &secret.Secret{
+		Key:       key,
+		CipherHex: cipherHex,
+	}, nil
 }
 
 func exists(filePath string) bool {
