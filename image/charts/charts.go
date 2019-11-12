@@ -2,37 +2,32 @@ package charts
 
 import (
 	"image"
-	"image/color"
 	"image/png"
 	"os"
 )
 
 const (
-	barWidth       = 50
-	sepWidth       = 10
-	barHeightCoeff = 2
+	// BarWidth is the width of the chart bars
+	BarWidth = 50
+	// SepWidth is the width of the seperator between the chart bars
+	SepWidth = 10
+	// BarHeightCoeff is the coefficient to use to multiply the chart bar heights
+	BarHeightCoeff = 2
 )
 
+// Drawer draws the charts using different techniques
+type Drawer interface {
+	Draw(w, h int, data []int) (image.Image, error)
+}
+
 // Draw charts using standard image package
-func Draw(filename string, data []int) error {
+func Draw(drawer Drawer, filename string, data []int) error {
 	w := computeMaxWidth(data)
 	h := computeMaxHeight(data)
-	img := image.NewRGBA(image.Rect(0, 0, w, h))
-	for x := 0; x < w; x++ {
-		for y := 0; y < h; y++ {
-			img.SetRGBA(x, y, color.RGBA{255, 255, 255, 255})
-		}
+	img, err := drawer.Draw(w, h, data)
+	if err != nil {
+		return err
 	}
-	for i, d := range data {
-		start := i*barWidth + i*sepWidth
-		end := start + barWidth
-		for x := start; x < end; x++ {
-			for y := h; y >= (h - d*barHeightCoeff); y-- {
-				img.SetRGBA(x, y, color.RGBA{0, 0, 255, 255})
-			}
-		}
-	}
-
 	return writeToFile(filename, img)
 }
 
@@ -43,7 +38,7 @@ func computeMaxHeight(data []int) int {
 			max = d
 		}
 	}
-	return max * barHeightCoeff
+	return max * BarHeightCoeff
 }
 
 func computeMaxWidth(data []int) int {
@@ -54,7 +49,7 @@ func computeMaxWidth(data []int) int {
 	if len(data) < 1 {
 		nbSep = 0
 	}
-	return barWidth*len(data) + sepWidth*nbSep
+	return BarWidth*len(data) + SepWidth*nbSep
 }
 
 func writeToFile(filename string, img image.Image) error {

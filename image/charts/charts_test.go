@@ -9,11 +9,11 @@ func Test_computeMaxHeight(t *testing.T) {
 	}{
 		"basic": {
 			given:    []int{10, 20, 5, 2},
-			expected: 20 * barHeightCoeff,
+			expected: 20 * BarHeightCoeff,
 		},
 		"single value": {
 			given:    []int{1},
-			expected: 1 * barHeightCoeff,
+			expected: 1 * BarHeightCoeff,
 		},
 		"empty slice": {
 			given:    []int{},
@@ -37,15 +37,15 @@ func Test_computeMaxWidth(t *testing.T) {
 	}{
 		"basic": {
 			given:    []int{10, 20, 5, 2},
-			expected: 4*barWidth + 3*sepWidth,
+			expected: 4*BarWidth + 3*SepWidth,
 		},
 		"one value": {
 			given:    []int{10},
-			expected: barWidth,
+			expected: BarWidth,
 		},
 		"two values": {
 			given:    []int{10, 20},
-			expected: 2*barWidth + sepWidth,
+			expected: 2*BarWidth + SepWidth,
 		},
 		"empty slice": {
 			given:    []int{},
