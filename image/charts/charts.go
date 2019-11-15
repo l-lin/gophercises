@@ -17,17 +17,14 @@ const (
 
 // Drawer draws the charts using different techniques
 type Drawer interface {
-	Draw(w, h int, data []int) (image.Image, error)
+	Draw(w, h int, data []int) image.Image
 }
 
 // Draw charts using standard image package
 func Draw(drawer Drawer, filename string, data []int) error {
 	w := computeMaxWidth(data)
 	h := computeMaxHeight(data)
-	img, err := drawer.Draw(w, h, data)
-	if err != nil {
-		return err
-	}
+	img := drawer.Draw(w, h, data)
 	return writeToFile(filename, img)
 }
 
