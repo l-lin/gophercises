@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"runtime/debug"
+	"strconv"
 
 	"github.com/l-lin/gophercises/transform/primitive"
 )
@@ -67,7 +68,19 @@ func UploadHandler() http.HandlerFunc {
 			return
 		}
 
-		out, err := primitive.Transform(in.Name(), fileExtensions[0], 1, 10)
+		q := r.URL.Query()
+		mode, err := strconv.Atoi(q.Get("mode"))
+		if err != nil {
+			displayError(w, fmt.Sprintf("Invalid mode: %s", err), http.StatusBadRequest)
+			return
+		}
+		nbShapes, err := strconv.Atoi(q.Get("nbShapes"))
+		if err != nil {
+			displayError(w, fmt.Sprintf("Invalid nbShapes: %s", err), http.StatusBadRequest)
+			return
+		}
+
+		out, err := primitive.Transform(in.Name(), fileExtensions[0], mode, nbShapes)
 		if err != nil {
 			log.Fatal(err)
 		}
