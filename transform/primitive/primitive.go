@@ -1,33 +1,28 @@
 package primitive
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 // Transform an image into a primitive image
-func Transform(in, ext string, mode int, nbShapes int) (io.Reader, error) {
-	out, err := ioutil.TempFile("", fmt.Sprintf("out_*%s", ext))
+func Transform(in, dst string, mode Mode, nbShapes int) error {
+	fileName := filepath.Base(in)
+	outFilePath := fmt.Sprintf("%s/%s_%s", dst, strings.ToLower(mode.String()), fileName)
+	out, err := os.Create(outFilePath)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	defer os.Remove(out.Name())
-	cmd := exec.Command("primitive", "-v", "-i", in, "-o", out.Name(), "-m", strconv.Itoa(mode), "-n", strconv.Itoa(nbShapes))
+	cmd := exec.Command("primitive", "-v", "-i", in, "-o", out.Name(), "-m", strconv.Itoa(int(mode)), "-n", strconv.Itoa(nbShapes))
 	result, err := cmd.CombinedOutput()
-	log.Println(string(result))
+	log.Printf("[INFO] %s", string(result))
 	if err != nil {
-		return nil, err
+		return err
 	}
-	b := bytes.NewBuffer(nil)
-	_, err = io.Copy(b, out)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
+	return nil
 }

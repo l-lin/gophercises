@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
+	"github.com/l-lin/gophercises/transform/primitive"
 	"github.com/l-lin/gophercises/transform/web"
 	"github.com/spf13/cobra"
 )
@@ -25,12 +26,19 @@ func init() {
 }
 
 func runServe(cmd *cobra.Command, args []string) {
-	r := mux.NewRouter()
-	r.Methods("POST").Path("/io/images").Handler(web.UploadHandler())
-	r.Handle("/", http.FileServer(http.Dir("./public")))
-	h := web.DefaultHandler(r)
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{})
+	})
+	r.GET("/images", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "images.tmpl", gin.H{"image_names": primitive.ToSlice()})
+	})
+	r.POST("/io/images", web.UploadHandler)
+	r.GET("/images/:imageName", web.ImageHandler)
 
 	// Start the server
 	log.Printf("Server started on port %d\n", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), h))
+	log.Fatal(r.Run(fmt.Sprintf(":%d", port)))
 }
