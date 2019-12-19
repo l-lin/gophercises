@@ -19,6 +19,6 @@ Exercises from [Gophercises](https://gophercises.com/)
 - [x] [Recover middleware with Source Code](recoverchroma)
 - [x] [Twitter Retweet contest CLI](twitter)
 - [x] [Secret API and CLI](secret)
-- [ ] Image transform service
+- [x] [Image transform service](transform)
 - [ ] [Building images (png & svg)](image)
-- [ ] Building PDFs
+- [ ] [Building PDFs](pdf)
