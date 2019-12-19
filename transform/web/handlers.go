@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/l-lin/gophercises/transform/primitive"
@@ -35,7 +36,7 @@ func UploadHandler(c *gin.Context) {
 
 	go performTransformations(inFilePath)
 
-	c.Redirect(http.StatusCreated, "/images")
+	c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/images/%s", fileHeader.Filename))
 }
 
 // ImageHandler to handle and display images
@@ -57,6 +58,16 @@ func ImageHandler(c *gin.Context) {
 		return
 	}
 	c.Data(200, fmt.Sprintf("image/%s", ext[1:]), b)
+}
+
+// ImagesHandler to handle all images
+func ImagesHandler(c *gin.Context) {
+	imageName := c.Params.ByName("imageName")
+	images := []string{}
+	for _, m := range primitive.Modes {
+		images = append(images, fmt.Sprintf("%s_%s", strings.ToLower(m.String()), imageName))
+	}
+	c.HTML(http.StatusOK, "images.tmpl", gin.H{"images": images})
 }
 
 func displayError(c *gin.Context, statusCode int, message string) {

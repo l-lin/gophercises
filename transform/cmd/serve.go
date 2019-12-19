@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/l-lin/gophercises/transform/primitive"
 	"github.com/l-lin/gophercises/transform/web"
 	"github.com/spf13/cobra"
 )
@@ -32,11 +31,9 @@ func runServe(cmd *cobra.Command, args []string) {
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{})
 	})
-	r.GET("/images", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "images.tmpl", gin.H{"image_names": primitive.ToSlice()})
-	})
+	r.GET("/images/:imageName", web.ImagesHandler)
 	r.POST("/io/images", web.UploadHandler)
-	r.GET("/images/:imageName", web.ImageHandler)
+	r.GET("/io/images/:imageName", web.ImageHandler)
 
 	// Start the server
 	log.Printf("Server started on port %d\n", port)
