@@ -19,6 +19,11 @@ watch:
 	@echo "  >  Watching go files..."
 	@if type "ag" > /dev/null 2>&1; then if type "entr" > /dev/null 2>&1; then ag -l | entr make clean fmt vet test-colorized build; else echo "Please install entr: http://eradman.com/entrproject/"; fi else echo "Please install silver searcher: https://github.com/ggreer/the_silver_searcher"; fi
 
+## watch-run: run project at go files modification
+watch-run-invoice:
+	@echo "  >  Watching go files..."
+	@if type "ag" > /dev/null 2>&1; then if type "entr" > /dev/null 2>&1; then ag -l | entr go run . invoice; else echo "Please install entr: http://eradman.com/entrproject/"; fi else echo "Please install silver searcher: https://github.com/ggreer/the_silver_searcher"; fi
+
 # ---------------------------------------------------------------------------
 
 archive:
