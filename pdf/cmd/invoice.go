@@ -26,6 +26,18 @@ func runInvoice(cmd *cobra.Command, args []string) {
 			Number:  123,
 			Street:  "Foobar street",
 			ZipCode: "12345",
+			Country: "France",
+		},
+		Bill: invoice.Bill{
+			ClientName: "Someone Giving Money",
+			ClientAddress: invoice.CompanyAddress{
+				Number:  321,
+				Street:  "Client street",
+				ZipCode: "54321",
+				Country: "US",
+			},
+			InvoiceNumber: "0000000123",
+			DateOfIssue:   "05/09/2018",
 		},
 	}
 	g.Generate()
