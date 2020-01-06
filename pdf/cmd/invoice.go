@@ -38,6 +38,22 @@ func runInvoice(cmd *cobra.Command, args []string) {
 			},
 			InvoiceNumber: "0000000123",
 			DateOfIssue:   "05/09/2018",
+			Currency:      "$",
+			Units: []invoice.Unit{
+				invoice.Unit{
+					UnitName:       "2x6 Lumber - 8'",
+					PricePerUnit:   375, // in cents
+					UnitsPurchased: 220,
+				}, {
+					UnitName:       "Drywall Sheet",
+					PricePerUnit:   822, // in cents
+					UnitsPurchased: 50,
+				}, {
+					UnitName:       "Paint",
+					PricePerUnit:   1455, // in cents
+					UnitsPurchased: 3,
+				},
+			},
 		},
 	}
 	g.Generate()

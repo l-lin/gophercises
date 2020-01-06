@@ -1,7 +1,9 @@
 package invoice
 
 import (
+	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/jung-kurt/gofpdf"
 )
@@ -83,7 +85,7 @@ func (g *Generator) invoiceHeader(pdf *gofpdf.Fpdf) {
 	pdf.SetFont("Arial", "", 12)
 	pdf.SetTextColor(0, 0, 0)
 	pdf.MoveTo(30, 120)
-	pdf.MultiCell(200, 20, g.Bill.String(), gofpdf.BorderNone, gofpdf.AlignLeft, false)
+	pdf.MultiCell(200, 20, g.Bill.FullClientAddress(), gofpdf.BorderNone, gofpdf.AlignLeft, false)
 	// Invoice number
 	pdf.SetFont("Arial", "", 12)
 	pdf.SetTextColor(0, 0, 0)
@@ -102,7 +104,7 @@ func (g *Generator) invoiceHeader(pdf *gofpdf.Fpdf) {
 	pdf.SetFont("Arial", "B", 50)
 	pdf.SetTextColor(64, 64, 64)
 	pdf.MoveTo(368, 155)
-	pdf.Cell(400, 0, "$1838.53")
+	pdf.Cell(400, 0, fmt.Sprintf("%s%s", g.Bill.Currency, strconv.FormatFloat(g.Bill.InvoiceTotal(), 'f', 2, 64)))
 	// Line break
 	w, _ := pdf.GetPageSize()
 	pdf.SetFont("Arial", "B", 30)

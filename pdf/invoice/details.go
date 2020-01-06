@@ -31,9 +31,20 @@ type Bill struct {
 	ClientAddress CompanyAddress
 	InvoiceNumber string
 	DateOfIssue   string
-	InvoiceTotal  string
+	// nothing fancy here and complicated, we will just prepend the currency with the price
+	Currency string
+	Units    []Unit
 }
 
-func (b Bill) String() string {
+// FullClientAddress returns the complete information of the client in string
+func (b Bill) FullClientAddress() string {
 	return fmt.Sprintf("%s\n%s", b.ClientName, b.ClientAddress.String())
+}
+
+// InvoiceTotal computes the total of the invoice due by the client
+func (b Bill) InvoiceTotal() (total float64) {
+	for _, unit := range b.Units {
+		total = total + float64(unit.PricePerUnit*unit.UnitsPurchased)
+	}
+	return total / 100
 }
