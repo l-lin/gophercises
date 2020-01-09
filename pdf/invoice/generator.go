@@ -26,6 +26,7 @@ func (g *Generator) Generate() {
 	pdf.AddPage()
 
 	g.invoiceHeader(pdf)
+	g.body(pdf)
 
 	// Write PDF file
 	err := pdf.OutputFileAndClose(fileName)
@@ -111,4 +112,40 @@ func (g *Generator) invoiceHeader(pdf *gofpdf.Fpdf) {
 	pdf.SetFillColor(64, 64, 64)
 	pdf.MoveTo(20, 230)
 	pdf.CellFormat(w-40, 5, "", "", 0, "LM", true, 0, "")
+	pdf.Ln(20)
+}
+
+func (g *Generator) body(pdf *gofpdf.Fpdf) {
+	pdf.SetFont("Arial", "B", 14)
+	pdf.SetTextColor(180, 180, 180)
+	// First line
+	pdf.Cell(200, 10, "Description")
+	pdf.Cell(150, 10, "Price Per Unit")
+	pdf.Cell(130, 10, "Quantity")
+	pdf.Cell(150, 10, "Amount")
+	pdf.Ln(30)
+
+	// Table
+	pdf.SetFont("Arial", "", 14)
+	pdf.SetTextColor(0, 0, 0)
+	w, _ := pdf.GetPageSize()
+	for _, unit := range g.Bill.Units {
+		pdf.Cell(200, 10, unit.UnitName)
+		pdf.Cell(150, 10, fmt.Sprintf("%s%d", g.Bill.Currency, unit.PricePerUnit))
+		pdf.Cell(130, 10, strconv.Itoa(unit.UnitsPurchased))
+		pdf.Cell(150, 10, fmt.Sprintf("%s%v", g.Bill.Currency, unit.Amount()))
+		pdf.SetDrawColor(64, 64, 64)
+		pdf.Ln(30)
+		y := pdf.GetY()
+		pdf.Line(30, y, w-30, y)
+		pdf.Ln(30)
+	}
+	pdf.Ln(30)
+
+	// Subtotal
+	pdf.Cell(200, 10, "")
+	pdf.Cell(150, 10, "")
+	pdf.Cell(130, 10, "Subtotal")
+	pdf.Cell(150, 10, fmt.Sprintf("%s%v", g.Bill.Currency, g.Bill.InvoiceTotal()))
+
 }
